@@ -15,8 +15,27 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
+	/**
+	 * TODO 
+	 * 
+	 * Add in the emailExists and ncsuIdExists since there
+	 * is a misalignment between the controller and
+	 * the service
+	 * 
+	 * Maybe add in a the find functions in here to
+	 */
+	
     /**
      * Service used to perform user-related operations.
+     * The controller gets info from the front, processes 
+     * it then sends it to the service, which will then
+     * update the repository
+     * 
+     * Don't put too much logic
+     * 
+     * The general flow is the controller gets a request, 
+     * sends it to the service to process the request
+     * service updates the repository with the new data
      */
     private final UserService userService;
 
@@ -50,6 +69,40 @@ public class UserController {
             @PathVariable final Long userId) {
 
         return userService.getUserById(userId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    //Developed after asking Gemini what are potentially missing from the repository
+    // controller, and service
+    /**
+     * Finds a user based on their email and returns it
+     * 
+     * @param email the email to get a user with
+     * @return the matching user 404 if a user doesn't have said email
+     */
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(
+    		@PathVariable final String email) {
+    	
+    	return userService.getUserByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    //Developed after asking Gemini what are potentially missing from the repository
+    // controller, and service
+    /**
+     * Finds a user based on their NCSU Id and returns it
+     * 
+     * @param ncsuID the NCSU Id to get a user with
+     * @return the matching user 404 if a user doesn't have said email
+     */
+    @GetMapping("/ncsu/{ncsuId}")
+    public ResponseEntity<User> getUserByNcsuId(
+    		@PathVariable final String ncsuId) {
+    	
+    	return userService.getUserByNcsuId(ncsuId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

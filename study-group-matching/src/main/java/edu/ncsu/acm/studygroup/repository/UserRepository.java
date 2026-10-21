@@ -10,6 +10,14 @@ import java.util.Optional;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	/**
+	 * TODO
+	 * 
+	 * Add in deleteById, save, findById, createUser, deleteUser, and findAll
+	 * 
+	 * findall, find by id, save, deleteById, 
+	 */
+	
     /**
      * Finds a user by email address.
      *
