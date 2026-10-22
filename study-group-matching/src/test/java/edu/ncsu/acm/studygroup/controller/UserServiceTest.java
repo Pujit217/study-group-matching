@@ -1,5 +1,6 @@
 package edu.ncsu.acm.studygroup.controller;
 
+import edu.ncsu.acm.studygroup.entity.StudyPreference;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.StudyPreferenceRepository;
 import edu.ncsu.acm.studygroup.repository.UserRepository;
@@ -42,6 +43,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
+        studyPreferenceRepository = Mockito.mock(StudyPreferenceRepository.class);
         userService = new UserService(userRepository, studyPreferenceRepository);
     }
 
@@ -86,9 +88,32 @@ class UserServiceTest {
     }
     
     /**
-     * 
+     * Tests that getPreferenceByUserId works correctly
      */
-    
+    @Test
+    void testGetPreferenceByUserId() {
+    	User user = new User("Test User", "test@ncsu.edu");
+    	StudyPreference preference = new StudyPreference(user);
+    	user.setStudyPreference(preference);
+    	Long id = (long) 100000;
+    	user.setUserId(id);
+    	user.getStudyPreference().updatePreferences("MW", "group", 3, "lock in", "have fun");
+    	when(userRepository.findById(id))
+        .thenReturn(Optional.of(user));
+    	when(studyPreferenceRepository.findByUser(user))
+        .thenReturn(Optional.of(preference));
+    	Optional<StudyPreference> result1 =
+                userService.getPreferenceByUserId(user.getUserId());
+    	Optional<StudyPreference> result2 =
+                userService.getPreferenceByUserId((long)00000);
+    	assertTrue(result2.isEmpty());
+    	assertTrue(result1.isPresent());
+    	assertEquals("MW", result1.get().getAvailability());
+        assertEquals("group", result1.get().getStudyStyle());
+        assertEquals(3, result1.get().getPreferredGroupSize());
+        assertEquals("lock in", result1.get().getStudyMode());
+        assertEquals("have fun", result1.get().getAdditionalNotes());
+    }
 
     
 }

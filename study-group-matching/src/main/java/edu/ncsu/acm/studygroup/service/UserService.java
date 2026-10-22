@@ -102,6 +102,22 @@ public class UserService {
     }
     
     /**
+     * Finds a study preference associated with a user based
+     * on the user's ID.
+     * 
+     * @param userId the user id to 
+     * @return the study preference associated with a user, if it exists
+     */
+    public Optional<StudyPreference> getPreferenceByUserId(final Long userId) {
+    	if (userRepository.findById(userId).isPresent()) {
+    		User user = userRepository.findById(userId).get();
+            return studyPreferenceRepository.findByUser(user);
+    	}
+    	return Optional.empty();
+    	
+    }
+    
+    /**
      * Finds a study preference using the database identifier.
      *
      * @param preferenceId the study preference ID to search for

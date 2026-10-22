@@ -101,21 +101,28 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
     
+    
+    /*
+     * After making an initial version, I asked Gemini to check the first iteration.
+     * It noted several errors that I made and made recommendations that have
+     * resulted in this method
+     */
     /**
      * Finds a study preference based on its associated user and returns it
      * 
      * @param user the user to get the study preference with
-     * @return the matching user 404 if a study preference doesn't have an
+     * @return the matching study preference 404 if a study preference doesn't have an
      * associated user
      */
-    @GetMapping("/{preferenceId}")
+    @GetMapping("/{userId}/preference")
     public ResponseEntity<StudyPreference> getPreferenceByUser(
-    		@PathVariable final User user) {
-    	
-    	return userService.getPreferenceByUser(user)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    		@PathVariable final Long userId) {
+    		return userService.getPreferenceByUserId(userId)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
     }
+
+
 
     /**
      * Creates a new user.
@@ -186,12 +193,12 @@ public class UserController {
      * @return updated study preference or 404 if the study preference
      * does not exist
      */
-    @PutMapping("/{preferenceId}")
+    @PutMapping("/{userId}/preference")
     public ResponseEntity<StudyPreference> updatePreference(
-            @PathVariable final Long preferenceId,
+            @PathVariable final Long userId,
             @RequestBody final StudyPreference updatedPreference) {
 
-        return userService.getPreferenceById(preferenceId)
+        return userService.getPreferenceByUserId(userId)
                 .map(existingPreference -> {
                     existingPreference.updatePreferences(
                             updatedPreference.getAvailability(),
@@ -245,6 +252,11 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+    
+    /**
+     * Makes comparisons throughout the study preference database
+     * to return a 
+     */
     
     
 }
