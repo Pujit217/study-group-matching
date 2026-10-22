@@ -1,5 +1,6 @@
 package edu.ncsu.acm.studygroup.controller;
 
+import edu.ncsu.acm.studygroup.entity.StudyPreference;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +19,7 @@ public class UserController {
 	/**
 	 * TODO 
 	 * 
-	 * Add in the emailExists and ncsuIdExists since there
-	 * is a misalignment between the controller and
-	 * the service
-	 * 
-	 * Maybe add in a the find functions in here to
-	 */
-	
-    /**
-     * Service used to perform user-related operations.
-     * The controller gets info from the front, processes 
-     * it then sends it to the service, which will then
-     * update the repository
-     * 
-     * Don't put too much logic
-     * 
-     * The general flow is the controller gets a request, 
-     * sends it to the service to process the request
-     * service updates the repository with the new data
+	 * Add in study preference functionality to user controller
      */
     private final UserService userService;
 
@@ -56,6 +40,16 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
+    }
+    
+    /**
+     * Returns all study preferences currently stored in the application.
+     *
+     * @return list of study preferences
+     */
+    @GetMapping
+    public List<StudyPreference> getAllPreferences() {
+        return userService.getAllPreferences();
     }
 
     /**
@@ -106,6 +100,22 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    
+    /**
+     * Finds a study preference based on its associated user and returns it
+     * 
+     * @param user the user to get the study preference with
+     * @return the matching user 404 if a study preference doesn't have an
+     * associated user
+     */
+    @GetMapping("/{preferenceId}")
+    public ResponseEntity<StudyPreference> getPreferenceByUser(
+    		@PathVariable final User user) {
+    	
+    	return userService.getPreferenceByUser(user)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     /**
      * Creates a new user.
@@ -121,6 +131,22 @@ public class UserController {
                 userService.createUser(user);
 
         return ResponseEntity.ok(createdUser);
+    }
+    
+    /**
+     * Creates a new study preference.
+     *
+     * @param preference study preference information received from the request
+     * @return newly created study preference
+     */
+    @PostMapping
+    public ResponseEntity<StudyPreference> createPreference(
+            @RequestBody final StudyPreference preference) {
+
+        final StudyPreference createdPreference =
+                userService.createPreference(preference);
+
+        return ResponseEntity.ok(createdPreference);
     }
 
     /**
@@ -151,6 +177,36 @@ public class UserController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+    
+    /**
+     * Updates an existing study preference.
+     *
+     * @param preferenceId ID of the study preference being updated
+     * @param updatedPreference new study preference information
+     * @return updated study preference or 404 if the study preference
+     * does not exist
+     */
+    @PutMapping("/{preferenceId}")
+    public ResponseEntity<StudyPreference> updatePreference(
+            @PathVariable final Long preferenceId,
+            @RequestBody final StudyPreference updatedPreference) {
+
+        return userService.getPreferenceById(preferenceId)
+                .map(existingPreference -> {
+                    existingPreference.updatePreferences(
+                            updatedPreference.getAvailability(),
+                            updatedPreference.getStudyStyle(),
+                            updatedPreference.getPreferredGroupSize(),
+                            updatedPreference.getStudyMode(),
+                            updatedPreference.getAdditionalNotes()
+                    );
+
+                    return ResponseEntity.ok(
+                            userService.updatePreference(existingPreference)
+                    );
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     /**
      * Deletes a user by ID.
@@ -170,4 +226,25 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+    
+    /**
+     * Deletes a study preference by ID.
+     *
+     * @param preferenceId ID of the study preference being deleted
+     * @return 204 response after successful deletion
+     */
+    @DeleteMapping("/{preferenceId}")
+    public ResponseEntity<Void> deletePreference(
+            @PathVariable final Long preferenceId) {
+
+        if (userService.getPreferenceById(preferenceId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        userService.deletePreference(preferenceId);
+
+        return ResponseEntity.noContent().build();
+    }
+    
+    
 }

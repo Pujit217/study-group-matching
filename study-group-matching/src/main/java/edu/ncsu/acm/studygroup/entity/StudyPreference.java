@@ -16,6 +16,12 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "study_preferences")
 public class StudyPreference {
+	
+	/*
+	 * TODO
+	 * 
+	 * Add in study preference functionality to user controller
+	 */
 
     /**
      * Unique database identifier for this preference profile.

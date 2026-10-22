@@ -1,6 +1,7 @@
 package edu.ncsu.acm.studygroup.controller;
 
 import edu.ncsu.acm.studygroup.entity.User;
+import edu.ncsu.acm.studygroup.repository.StudyPreferenceRepository;
 import edu.ncsu.acm.studygroup.repository.UserRepository;
 import edu.ncsu.acm.studygroup.service.UserService;
 
@@ -20,9 +21,15 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
 
     /**
-     * Mock repository used so the test does not require a real database.
+     * Mock user repository used so the test does not require a real database.
      */
     private UserRepository userRepository;
+    
+    /**
+     * Mock study preference repository used so the test does not require
+     *  a real database.
+     */
+    private StudyPreferenceRepository studyPreferenceRepository;
 
     /**
      * Service being tested.
@@ -35,7 +42,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, studyPreferenceRepository);
     }
 
     /**
