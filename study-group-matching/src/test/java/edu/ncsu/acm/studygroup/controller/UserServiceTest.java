@@ -67,6 +67,7 @@ class UserServiceTest {
     /**
      * Checks to see if a user's profile is updated correctly 
      */
+    
     @Test
     void testUpdatingUserInfo() {
     	User user = new User("Test User", "test@ncsu.edu");
@@ -85,6 +86,26 @@ class UserServiceTest {
          assertEquals("2000", result.get().getYear());
          assertEquals("Math is cool", result.get().getBio());
          assertEquals("cool png", result.get().getProfilePicture());
+    }
+    
+    @Test
+    void testUpdatingPreferenceInfo() {
+    	User user = new User("Test User", "test@ncsu.edu");
+    	StudyPreference s = new StudyPreference(user);
+    	s.updatePreferences("MW 11-2", "With music",7, "talkative", "Enjoys jazz");
+    	
+    	when(studyPreferenceRepository.findByUser(user))
+        .thenReturn(Optional.of(s));
+    	
+    	Optional<StudyPreference> result = 
+    			userService.getPreferenceByUser(user);
+    	
+    	assertTrue(result.isPresent());
+    	assertEquals("MW 11-2", result.get().getAvailability());
+    	assertEquals("With music", result.get().getStudyStyle());
+    	assertEquals(7, result.get().getPreferredGroupSize());
+    	assertEquals("talkative", result.get().getStudyMode());
+    	assertEquals("Enjoys jazz", result.get().getAdditionalNotes());
     }
     
     /**
@@ -114,6 +135,8 @@ class UserServiceTest {
         assertEquals("lock in", result1.get().getStudyMode());
         assertEquals("have fun", result1.get().getAdditionalNotes());
     }
+    
+   
 
     
 }

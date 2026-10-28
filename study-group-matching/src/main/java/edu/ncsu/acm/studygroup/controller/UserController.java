@@ -1,5 +1,7 @@
 package edu.ncsu.acm.studygroup.controller;
 
+import edu.ncsu.acm.studygroup.dto.CreateUserDto;
+import edu.ncsu.acm.studygroup.dto.StudyPreferenceDto;
 import edu.ncsu.acm.studygroup.entity.StudyPreference;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.service.UserService;
@@ -132,7 +134,7 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<User> createUser(
-            @RequestBody final User user) {
+            @RequestBody final CreateUserDto user) {
 
         final User createdUser =
                 userService.createUser(user);
@@ -140,6 +142,8 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
     
+    //Used Gemini to handle if a user id isn't found in the
+    //repository
     /**
      * Creates a new study preference.
      *
@@ -148,34 +152,33 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<StudyPreference> createPreference(
-            @RequestBody final StudyPreference preference) {
+            @RequestBody final StudyPreferenceDto preferenceDto) {
 
-        final StudyPreference createdPreference =
-                userService.createPreference(preference);
-
-        return ResponseEntity.ok(createdPreference);
+        return userService.createPreference(preferenceDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**
      * Updates an existing user.
      *
      * @param userId ID of the user being updated
-     * @param updatedUser new user information
+     * @param updatedUserDto new user information
      * @return updated user or 404 if the user does not exist
      */
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(
             @PathVariable final Long userId,
-            @RequestBody final User updatedUser) {
+            @RequestBody final CreateUserDto updatedUserDto) {
 
         return userService.getUserById(userId)
                 .map(existingUser -> {
                     existingUser.updateProfile(
-                            updatedUser.getName(),
-                            updatedUser.getMajor(),
-                            updatedUser.getYear(),
-                            updatedUser.getBio(),
-                            updatedUser.getProfilePicture()
+                            updatedUserDto.getName(),
+                            updatedUserDto.getMajor(),
+                            updatedUserDto.getYear(),
+                            updatedUserDto.getBio(),
+                            updatedUserDto.getProfilePicture()
                     );
 
                     return ResponseEntity.ok(
@@ -189,23 +192,23 @@ public class UserController {
      * Updates an existing study preference.
      *
      * @param preferenceId ID of the study preference being updated
-     * @param updatedPreference new study preference information
+     * @param updatedPreferenceDto new study preference information
      * @return updated study preference or 404 if the study preference
      * does not exist
      */
     @PutMapping("/{userId}/preference")
     public ResponseEntity<StudyPreference> updatePreference(
             @PathVariable final Long userId,
-            @RequestBody final StudyPreference updatedPreference) {
+            @RequestBody final StudyPreferenceDto updatedPreferenceDto) {
 
         return userService.getPreferenceByUserId(userId)
                 .map(existingPreference -> {
                     existingPreference.updatePreferences(
-                            updatedPreference.getAvailability(),
-                            updatedPreference.getStudyStyle(),
-                            updatedPreference.getPreferredGroupSize(),
-                            updatedPreference.getStudyMode(),
-                            updatedPreference.getAdditionalNotes()
+                            updatedPreferenceDto.getAvailability(),
+                            updatedPreferenceDto.getStudyStyle(),
+                            updatedPreferenceDto.getPreferredGroupSize(),
+                            updatedPreferenceDto.getStudyMode(),
+                            updatedPreferenceDto.getAdditionalNotes()
                     );
 
                     return ResponseEntity.ok(
@@ -253,10 +256,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
     
-    /**
-     * Makes comparisons throughout the study preference database
-     * to return a 
-     */
+   
     
     
 }

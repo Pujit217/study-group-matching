@@ -1,5 +1,7 @@
 package edu.ncsu.acm.studygroup.service;
 
+import edu.ncsu.acm.studygroup.dto.CreateUserDto;
+import edu.ncsu.acm.studygroup.dto.StudyPreferenceDto;
 import edu.ncsu.acm.studygroup.entity.StudyPreference;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.StudyPreferenceRepository;
@@ -133,18 +135,25 @@ public class UserService {
      * @param user user to save
      * @return saved user
      */
-    public User createUser(final User user) {
+    public User createUser(final CreateUserDto userDto) {
+    	User user = new User(userDto.getName(), userDto.getEmail());
         return userRepository.save(user);
     }
     
+    //Gemini was used to help handle the case when a user id doesn't exist in the
+    //repository
     /**
      * Creates and stores a new study preference.
      *
      * @param preference the study preference to save
      * @return saved study preference
      */
-    public StudyPreference createPreference(final StudyPreference preference) {
-        return studyPreferenceRepository.save(preference);
+    public Optional<StudyPreference> createPreference(final StudyPreferenceDto preferenceDto) {
+        return userRepository.findById(preferenceDto.getUserId())
+                .map(user -> {
+                    StudyPreference preference = new StudyPreference(user);
+                    return studyPreferenceRepository.save(preference);
+                });
     }
 
     /**
