@@ -1,5 +1,6 @@
 package edu.ncsu.acm.studygroup.controller;
 
+import edu.ncsu.acm.studygroup.dto.StudyPreferenceDto;
 import edu.ncsu.acm.studygroup.entity.StudyPreference;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.StudyPreferenceRepository;
@@ -14,6 +15,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -63,6 +67,45 @@ class UserServiceTest {
         assertTrue(result.isPresent());
         assertEquals("Test User", result.get().getName());
     }
+    
+    /**
+     * Created using Gemini. Tests that creating a preference with 
+     * a valid user id works as intended
+     */
+    @Test
+    void createPreference() {
+    	StudyPreferenceDto dto = new StudyPreferenceDto();
+        dto.setUserId(1L);
+
+        User user = new User("Test User", "test@ncsu.edu");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(studyPreferenceRepository.save(any(StudyPreference.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Optional<StudyPreference> result = userService.createPreference(dto);
+
+        assertTrue(result.isPresent());
+        verify(studyPreferenceRepository).save(any(StudyPreference.class));
+    }
+    
+    /**
+     * Created using Gemini. Tests that creating a preference that
+     * doesn't have a user id works correctly
+     */
+    @Test
+    void createPreferenceUserNot() {
+        StudyPreferenceDto dto = new StudyPreferenceDto();
+        dto.setUserId(99L);
+
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        Optional<StudyPreference> result = userService.createPreference(dto);
+
+        assertTrue(result.isEmpty());
+        // Ensure save was NEVER called because the user didn't exist
+        verify(studyPreferenceRepository, never()).save(any());
+    }
+    
     
     /**
      * Checks to see if a user's profile is updated correctly 
@@ -136,7 +179,32 @@ class UserServiceTest {
         assertEquals("have fun", result1.get().getAdditionalNotes());
     }
     
-   
+    /**
+     * Created by Gemini. Tests that a user is deleted from the
+     * repository
+     */
+    @Test
+    void testDeleteUserCallsDeleteById() {
+        Long userId = 1L;
+
+        userService.deleteUser(userId);
+
+        // Verifies that the service instructed the repository to delete ID 1
+        verify(userRepository).deleteById(userId);
+    }
+    
+    /**
+     * Tests that a preference is deleted from the 
+     * repository
+     */
+    @Test
+    void testDeletePreferenceById() {
+    	Long preferenceId = 1L;
+    	
+    	userService.deletePreference(preferenceId);
+    	
+    	verify(studyPreferenceRepository).deleteById(preferenceId);
+    }
 
     
 }

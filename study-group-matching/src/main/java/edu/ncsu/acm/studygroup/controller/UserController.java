@@ -18,11 +18,6 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-	/**
-	 * TODO 
-	 * 
-	 * Add in study preference functionality to user controller
-     */
     private final UserService userService;
 
     /**
