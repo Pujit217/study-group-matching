@@ -1,14 +1,20 @@
 package edu.ncsu.acm.studygroup.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 /**
  * Carries the information needed to request membership in a study group.
  */
 public class JoinRequestDto {
 
     /** User sending the request. */
+    @NotNull
+    @Positive
     private Long userId;
 
     /** Study group the user wants to join. */
+    @NotNull
+    @Positive
     private Long studyGroupId;
 
     /** Optional message sent with the request. */

@@ -1,9 +1,18 @@
 package edu.ncsu.acm.studygroup.controller;
 
+import edu.ncsu.acm.studygroup.dto.JoinRequestDto;
+import edu.ncsu.acm.studygroup.dto.JoinRequestResponseDto;
 import edu.ncsu.acm.studygroup.entity.JoinRequest;
+import edu.ncsu.acm.studygroup.entity.StudyGroup;
+import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.service.JoinRequestService;
+
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -37,9 +46,15 @@ public class JoinRequestController {
      * @return list of join requests
      */
     @GetMapping
-    public List<JoinRequest> getAllJoinRequests() {
-        return joinRequestService.getAllJoinRequests();
+    public List<JoinRequestResponseDto> getAllJoinRequests() {
+
+        return joinRequestService
+                .getAllJoinRequests()
+                .stream()
+                .map(JoinRequestResponseDto::fromEntity)
+                .toList();
     }
+
 
     /**
      * Creates a new request to join a study group.
@@ -47,14 +62,35 @@ public class JoinRequestController {
      * @param request join request information
      * @return newly created request
      */
-    @PostMapping
-    public ResponseEntity<JoinRequest> createJoinRequest(
-            @RequestBody final JoinRequest request) {
 
-        return ResponseEntity.ok(
-                joinRequestService.createJoinRequest(request)
+    @PostMapping
+    public ResponseEntity<JoinRequestResponseDto> createJoinRequest(
+            @Valid @RequestBody final JoinRequestDto dto) {
+
+        // Create references using the incoming IDs
+        User user = new User();
+        user.setUserId(dto.getUserId());
+
+        StudyGroup group = new StudyGroup();
+        group.setGroupId(dto.getStudyGroupId());
+
+        // Build a join request
+        JoinRequest request = new JoinRequest(
+                user,
+                group,
+                dto.getMessage()
         );
+
+        // Service validates and loads real database entities
+        JoinRequest savedRequest =
+                joinRequestService.createJoinRequest(request);
+
+        // Return a safe response with HTTP 201 Created
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(JoinRequestResponseDto.fromEntity(savedRequest));
     }
+
 
     /**
      * Accepts an existing pending join request.
@@ -63,19 +99,24 @@ public class JoinRequestController {
      * @return updated request or 404
      */
     @PutMapping("/{requestId}/accept")
-    public ResponseEntity<JoinRequest> acceptRequest(
+    public ResponseEntity<JoinRequestResponseDto> acceptRequest(
             @PathVariable final Long requestId) {
 
         return joinRequestService
                 .getJoinRequestById(requestId)
-                .map(request ->
-                        ResponseEntity.ok(
-                                joinRequestService
-                                        .acceptRequest(request)
-                        )
-                )
-                .orElse(ResponseEntity.notFound().build());
+                .map(request -> {
+
+                    JoinRequest accepted =
+                            joinRequestService.acceptRequest(request);
+
+                    return ResponseEntity.ok(
+                            JoinRequestResponseDto.fromEntity(accepted)
+                    );
+                })
+                .orElseGet(() ->
+                        ResponseEntity.notFound().build());
     }
+
 
     /**
      * Rejects an existing pending join request.
@@ -84,19 +125,24 @@ public class JoinRequestController {
      * @return updated request or 404
      */
     @PutMapping("/{requestId}/reject")
-    public ResponseEntity<JoinRequest> rejectRequest(
+    public ResponseEntity<JoinRequestResponseDto> rejectRequest(
             @PathVariable final Long requestId) {
 
         return joinRequestService
                 .getJoinRequestById(requestId)
-                .map(request ->
-                        ResponseEntity.ok(
-                                joinRequestService
-                                        .rejectRequest(request)
-                        )
-                )
-                .orElse(ResponseEntity.notFound().build());
+                .map(request -> {
+
+                    JoinRequest rejected =
+                            joinRequestService.rejectRequest(request);
+
+                    return ResponseEntity.ok(
+                            JoinRequestResponseDto.fromEntity(rejected)
+                    );
+                })
+                .orElseGet(() ->
+                        ResponseEntity.notFound().build());
     }
+
 
     /**
      * Cancels an existing pending join request.
@@ -105,17 +151,22 @@ public class JoinRequestController {
      * @return updated request or 404
      */
     @PutMapping("/{requestId}/cancel")
-    public ResponseEntity<JoinRequest> cancelRequest(
+    public ResponseEntity<JoinRequestResponseDto> cancelRequest(
             @PathVariable final Long requestId) {
 
         return joinRequestService
                 .getJoinRequestById(requestId)
-                .map(request ->
-                        ResponseEntity.ok(
-                                joinRequestService
-                                        .cancelRequest(request)
-                        )
-                )
-                .orElse(ResponseEntity.notFound().build());
+                .map(request -> {
+
+                    JoinRequest canceled =
+                            joinRequestService.cancelRequest(request);
+
+                    return ResponseEntity.ok(
+                            JoinRequestResponseDto.fromEntity(canceled)
+                    );
+                })
+                .orElseGet(() ->
+                        ResponseEntity.notFound().build());
     }
+
 }
