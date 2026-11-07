@@ -1,5 +1,6 @@
 package edu.ncsu.acm.studygroup.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,6 +49,7 @@ public class Section {
      * Course to which this section belongs.
      * Multiple sections may belong to the same course.
      */
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;

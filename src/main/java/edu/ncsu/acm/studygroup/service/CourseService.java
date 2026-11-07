@@ -1,127 +1,109 @@
 package edu.ncsu.acm.studygroup.service;
 
 import edu.ncsu.acm.studygroup.entity.Course;
+import edu.ncsu.acm.studygroup.entity.Enrollment;
 import edu.ncsu.acm.studygroup.entity.Section;
+import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.CourseRepository;
+import edu.ncsu.acm.studygroup.repository.EnrollmentRepository;
 import edu.ncsu.acm.studygroup.repository.SectionRepository;
+import edu.ncsu.acm.studygroup.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Handles business logic related to courses and course sections.
+ * Handles business logic related to courses, sections, and user enrollments.
  */
 @Service
 public class CourseService {
 
-    /**
-     * Repository used to access Course records.
-     */
     private final CourseRepository courseRepository;
-
-    /**
-     * Repository used to access Section records.
-     */
     private final SectionRepository sectionRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final UserRepository userRepository;
 
-    /**
-     * Creates the service using constructor injection.
-     *
-     * @param courseRepository repository used for course persistence
-     * @param sectionRepository repository used for section persistence
-     */
     public CourseService(final CourseRepository courseRepository,
-                         final SectionRepository sectionRepository) {
+                         final SectionRepository sectionRepository,
+                         final EnrollmentRepository enrollmentRepository,
+                         final UserRepository userRepository) {
         this.courseRepository = courseRepository;
         this.sectionRepository = sectionRepository;
+        this.enrollmentRepository = enrollmentRepository;
+        this.userRepository = userRepository;
     }
 
-    /**
-     * Returns all courses currently stored in the database.
-     *
-     * @return list of all courses
-     */
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
-    /**
-     * Finds a course using its database identifier.
-     *
-     * @param courseId course ID
-     * @return matching course, if one exists
-     */
     public Optional<Course> getCourseById(final Long courseId) {
         return courseRepository.findById(courseId);
     }
 
-    /**
-     * Finds a course using its official course code.
-     *
-     * @param courseCode course code such as CSC 316
-     * @return matching course, if one exists
-     */
     public Optional<Course> getCourseByCode(final String courseCode) {
         return courseRepository.findByCourseCode(courseCode);
     }
 
-    /**
-     * Creates and stores a new course.
-     *
-     * @param course course to save
-     * @return saved course
-     */
     public Course createCourse(final Course course) {
         return courseRepository.save(course);
     }
 
-    /**
-     * Saves changes made to an existing course.
-     *
-     * @param course course containing updated information
-     * @return updated course
-     */
     public Course updateCourse(final Course course) {
         return courseRepository.save(course);
     }
 
-    /**
-     * Deletes a course using its database identifier.
-     *
-     * @param courseId course ID
-     */
     public void deleteCourse(final Long courseId) {
         courseRepository.deleteById(courseId);
     }
 
-    /**
-     * Returns all sections associated with a course.
-     *
-     * @param course course whose sections should be returned
-     * @return list of course sections
-     */
-    public List<Section> getSectionsForCourse(final Course course) {
-        return sectionRepository.findByCourse(course);
+    // Notice we updated this method to use the custom query we wrote in the repository
+    public List<Section> getSectionsForCourseId(final Long courseId) {
+        return sectionRepository.findByCourse_CourseId(courseId);
     }
 
-    /**
-     * Creates and stores a new course section.
-     *
-     * @param section section to save
-     * @return saved section
-     */
     public Section createSection(final Section section) {
         return sectionRepository.save(section);
     }
 
-    /**
-     * Finds a section using its database identifier.
-     *
-     * @param sectionId section ID
-     * @return matching section, if one exists
-     */
     public Optional<Section> getSectionById(final Long sectionId) {
         return sectionRepository.findById(sectionId);
+    }
+
+    // --- ENROLLMENT LOGIC ---
+
+    /**
+     * Enrolls a user in a specific section of a course.
+     * Prevents duplicate enrollments and verifies the section belongs to the course.
+     */
+    @Transactional
+    public Enrollment enrollUser(Long userId, Long courseId, Long sectionId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Section not found"));
+
+        if (!section.getCourse().getCourseId().equals(course.getCourseId())) {
+            throw new IllegalArgumentException("This section does not belong to the specified course");
+        }
+
+        Optional<Enrollment> existingEnrollment = enrollmentRepository.findByUser_UserIdAndCourse_CourseId(userId, courseId);
+        if (existingEnrollment.isPresent()) {
+            throw new IllegalStateException("User is already enrolled in this course");
+        }
+
+        Enrollment enrollment = new Enrollment(user, course, section);
+        return enrollmentRepository.save(enrollment);
+    }
+
+    /**
+     * Retrieves all enrollments for a specific user.
+     */
+    public List<Enrollment> getUserEnrollments(Long userId) {
+        return enrollmentRepository.findByUser_UserId(userId);
     }
 }
