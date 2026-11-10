@@ -140,7 +140,6 @@ public class StudyGroupServiceTest {
 
         assertTrue(result.isPresent());
         assertSame(group, result.get());
-
         verify(studyGroupRepository).findById(1L);
     }
 
@@ -238,7 +237,6 @@ public class StudyGroupServiceTest {
                 );
 
         assertEquals(404, exception.getStatusCode().value());
-
         verify(studyGroupRepository, never())
                 .save(any(StudyGroup.class));
     }
@@ -275,7 +273,6 @@ public class StudyGroupServiceTest {
                 studyGroupService.deleteStudyGroup(1L);
 
         assertTrue(result);
-
         verify(studyGroupRepository).deleteById(1L);
     }
 
@@ -292,7 +289,6 @@ public class StudyGroupServiceTest {
                 studyGroupService.deleteStudyGroup(1L);
 
         assertFalse(result);
-
         verify(studyGroupRepository, never()).deleteById(1L);
     }
 

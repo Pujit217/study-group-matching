@@ -74,7 +74,6 @@ public class StudyGroupControllerTest {
                 studyGroupController.getAllStudyGroups();
 
         assertEquals(expectedGroups, result);
-
         verify(studyGroupService).getAllStudyGroups();
     }
 
@@ -128,11 +127,8 @@ public class StudyGroupControllerTest {
         ResponseEntity<StudyGroup> response =
                 studyGroupController.createStudyGroup(dto);
 
-        // Current controller implementation returns HTTP 200.
         assertEquals(200, response.getStatusCode().value());
-
         assertSame(createdGroup, response.getBody());
-
         verify(studyGroupService).createStudyGroup(dto);
     }
 
@@ -167,7 +163,6 @@ public class StudyGroupControllerTest {
                 );
 
         assertEquals(200, response.getStatusCode().value());
-
         assertSame(existingGroup, response.getBody());
         assertEquals(
                 "Updated CSC 216 Group",
@@ -179,9 +174,7 @@ public class StudyGroupControllerTest {
         );
 
         assertEquals(8, existingGroup.getMaxSize());
-
         assertEquals("Online", existingGroup.getStudyMode());
-
         verify(studyGroupService).updateStudyGroup(existingGroup);
     }
 
@@ -203,7 +196,6 @@ public class StudyGroupControllerTest {
                 );
 
         assertEquals(404, response.getStatusCode().value());
-
         verify(studyGroupService, never())
                 .updateStudyGroup(any(StudyGroup.class));
     }
@@ -223,7 +215,6 @@ public class StudyGroupControllerTest {
                 studyGroupController.deleteStudyGroup(1L);
 
         assertEquals(204, response.getStatusCode().value());
-
         verify(studyGroupService).deleteStudyGroup(1L);
     }
 
@@ -240,7 +231,6 @@ public class StudyGroupControllerTest {
                 studyGroupController.deleteStudyGroup(1L);
 
         assertEquals(404, response.getStatusCode().value());
-
         verify(studyGroupService, never()).deleteStudyGroup(1L);
     }
 
@@ -263,7 +253,6 @@ public class StudyGroupControllerTest {
                 studyGroupController.getGroupMembers(1L);
 
         assertEquals(expectedMembers, result);
-
         verify(studyGroupService).getGroupMembers(1L);
     }
 
@@ -283,9 +272,7 @@ public class StudyGroupControllerTest {
                 studyGroupController.addMember(1L, 10L);
 
         assertEquals(200, response.getStatusCode().value());
-
         assertSame(member, response.getBody());
-
         verify(studyGroupService).addMember(1L, 10L);
     }
 
@@ -300,9 +287,7 @@ public class StudyGroupControllerTest {
 
         ResponseEntity<Void> response =
                 studyGroupController.removeMember(1L, 10L);
-
         assertEquals(204, response.getStatusCode().value());
-
         verify(studyGroupService).removeMember(1L, 10L);
     }
 
@@ -317,9 +302,7 @@ public class StudyGroupControllerTest {
 
         ResponseEntity<Void> response =
                 studyGroupController.removeMember(1L, 10L);
-
         assertEquals(404, response.getStatusCode().value());
-
         verify(studyGroupService).removeMember(1L, 10L);
     }
 }
