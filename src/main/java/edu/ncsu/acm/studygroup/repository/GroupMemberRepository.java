@@ -41,4 +41,12 @@ public interface GroupMemberRepository
             User user,
             StudyGroup studyGroup
     );
+
+    /**
+     * Counts members in a study group
+     * @param studyGroup study group whose members are to be counted
+     * @return the number of members in input study group.
+     */
+    long countByStudyGroup(StudyGroup studyGroup);
+
 }
