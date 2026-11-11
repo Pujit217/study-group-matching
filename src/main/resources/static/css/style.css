@@ -211,6 +211,8 @@ li:hover span {
     flex-shrink: 0;
 }
 
+/* Eventually make one of these for each course category
+   For now can just have this for all courses */
 .csc {
     background-color: #5E6AAB;
     color: var(--accent-text);
@@ -273,6 +275,15 @@ li:hover span {
 
 .groupButton:hover {
     background-color: var(--accent-dark);
+}
+
+.searchInput {
+    margin-bottom: 2em;
+    border: 4px solid var(--primary);
+    border-radius: 1em;
+    height: 1.5em;
+    width: min(225px, 50vw);
+    padding: 0.5em;
 }
 
 @media only screen and (max-width: 768px) {
