@@ -16,6 +16,9 @@
     --accent-light: #5E6AAB;
     --accent-dark: #32385F;
 	--accent-text: #FFFFFF;
+
+	--trans-dur: 0.25s;
+	--ease-in-out: cubic-bezier(0.65,0,0.35,1.65);
 }
 
 * {
@@ -284,6 +287,51 @@ li:hover span {
     height: 1.5em;
     width: min(225px, 50vw);
     padding: 0.5em;
+}
+
+.radioGroup {
+    margin-bottom: 2em;
+}
+
+label {
+	display: flex;
+	cursor: pointer;
+	font-weight: 500;
+	position: relative;
+	overflow: hidden;
+	margin-bottom: 0.375em;
+	input {
+		position: absolute;
+		left: -9999px;
+		&:checked + span {
+			background-color: mix(var(--accent-text), var(--accent), 84%);
+			&:before {
+				box-shadow: inset 0 0 0 0.4375em var(--accent);
+			}
+		}
+	}
+	span {
+		display: flex;
+		align-items: center;
+		padding: 0.375em 0.75em 0.375em 0.375em;
+		border-radius: 99em;
+		transition: 0.25s ease;
+		&:hover {
+			background-color: mix(var(--accent-text), var(--accent), 84%);
+		}
+		&:before {
+			display: flex;
+			flex-shrink: 0;
+			content: "";
+			background-color: var(--accent-text);
+			width: 1.5em;
+			height: 1.5em;
+			border-radius: 50%;
+			margin-right: 0.375em;
+			transition: 0.25s ease;
+			box-shadow: inset 0 0 0 0.125em var(--accent);
+		}
+	}
 }
 
 @media only screen and (max-width: 768px) {
