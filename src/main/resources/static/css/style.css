@@ -141,6 +141,10 @@ li:hover span {
     padding: 3vh 3vw;
 }
 
+.profCard.important {
+    border: 8px solid var(--primary);
+}
+
 .dashCard {
     min-height: 5vh;
     min-width: 15em;
@@ -183,6 +187,12 @@ li:hover span {
     gap: 1em;
 }
 
+.prefHolder {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+    gap: 1em;
+}
+
 .courseGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(7em, 1fr));
@@ -204,6 +214,35 @@ li:hover span {
 .csc {
     background-color: #5E6AAB;
     color: var(--accent-text);
+}
+
+.invisible {
+    display: none;
+    visibility: hidden;
+}
+
+.node {
+    min-height: 2em;
+    padding: 1em 2em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1em;
+    background-color: var(--primary);
+    color: var(--primary-text);
+    text-align: center;
+}
+
+.nodeB {
+    min-height: 2em;
+    padding: 0.5em 1.5em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1em;
+    background-color: var(--secondary);
+    color: var(--accent-text);
+    text-align: center;
 }
 
 .groupHead {
