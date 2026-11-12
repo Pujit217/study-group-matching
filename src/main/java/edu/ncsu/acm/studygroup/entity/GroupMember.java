@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,14 @@ import java.time.LocalDateTime;
  * This class connects User and StudyGroup after the user has joined the group.
  */
 @Entity
-@Table(name = "group_members")
+@Table(
+        name = "group_members",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"user_id", "study_group_id"}
+                )
+        }
+)
 public class GroupMember {
 
     /**

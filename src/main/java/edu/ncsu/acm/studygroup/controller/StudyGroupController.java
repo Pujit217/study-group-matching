@@ -1,5 +1,9 @@
 package edu.ncsu.acm.studygroup.controller;
 
+
+import edu.ncsu.acm.studygroup.dto.CreateStudyGroupDto;
+import edu.ncsu.acm.studygroup.entity.GroupMember;
+
 import edu.ncsu.acm.studygroup.entity.StudyGroup;
 import edu.ncsu.acm.studygroup.service.StudyGroupService;
 import org.springframework.http.ResponseEntity;
@@ -58,16 +62,17 @@ public class StudyGroupController {
     /**
      * Creates a new study group.
      *
-     * @param studyGroup study-group information
+     * @param dto study-group information
      * @return newly created study group
      */
     @PostMapping
     public ResponseEntity<StudyGroup> createStudyGroup(
-            @RequestBody final StudyGroup studyGroup) {
+            @RequestBody final CreateStudyGroupDto dto) {
 
-        return ResponseEntity.ok(
-                studyGroupService.createStudyGroup(studyGroup)
-        );
+        StudyGroup createdGroup =
+                studyGroupService.createStudyGroup(dto);
+
+        return ResponseEntity.ok(createdGroup);
     }
 
     /**
@@ -119,9 +124,55 @@ public class StudyGroupController {
 
             return ResponseEntity.notFound().build();
         }
-
         studyGroupService.deleteStudyGroup(groupId);
+        return ResponseEntity.noContent().build();
+    }
 
+    /**
+     * Gets a list of group members
+     * @param groupId the group to search for
+     * @return the list of all members in group
+     */
+    @GetMapping("/{groupId}/members")
+    public List<GroupMember> getGroupMembers(
+            @PathVariable final Long groupId) {
+
+        return studyGroupService.getGroupMembers(groupId);
+    }
+
+    /**
+     * Adds member in a group
+     * @param groupId group to search for
+     * @param userId the user to add
+     * @return response containing the newly added member
+     */
+    @PostMapping("/{groupId}/members/{userId}")
+    public ResponseEntity<GroupMember> addMember(
+            @PathVariable final Long groupId,
+            @PathVariable final Long userId) {
+
+        GroupMember member =
+                studyGroupService.addMember(groupId, userId);
+
+        return ResponseEntity.ok(member);
+    }
+
+    /**
+     * Removes user from a study group
+     * @param groupId the group to search for
+     * @param userId the user to remove
+     * @return http 200 if successfully removed and http 404 if user is not
+     * successfully removed.
+     */
+    @DeleteMapping("/{groupId}/members/{userId}")
+    public ResponseEntity<Void> removeMember(
+            @PathVariable final Long groupId,
+            @PathVariable final Long userId) {
+
+        boolean removed = studyGroupService.removeMember(groupId, userId);
+        if (!removed) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.noContent().build();
     }
 }
