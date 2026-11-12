@@ -1,0 +1,15 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 40px;
+}
+
+main {
+    max-width: 800px;
+    margin: auto;
+}
+
+button {
+    padding: 10px 16px;
+    cursor: pointer;
+}
