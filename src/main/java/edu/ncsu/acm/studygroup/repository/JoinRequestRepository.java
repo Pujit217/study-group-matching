@@ -48,4 +48,15 @@ public interface JoinRequestRepository
             StudyGroup studyGroup,
             String status
     );
+
+    /**
+     * Checks whether a user already has a request
+     * with a specific status for a study group.
+     */
+    boolean existsByUserAndStudyGroupAndStatus(
+            User user,
+            StudyGroup studyGroup,
+            String status
+    );
+
 }
