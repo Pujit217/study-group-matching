@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+        <title>Study Group Matching - Profile</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="menuToggle">
+            <input type="checkbox" id="toggle"/>
+            <div class="menuCircle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar bLast"></span>
+            </div>
+            <div class="menu">
+                <p class="webName"><strong>Study Group Finder</strong></p>
+                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+                <li><span>Profile</span></li>
+                <li><span>Dashboard</span></li>
+                <li><span>Find Groups</span></li>
+                <li><span>Settings</span></li>
+            </div>
+        </div>
+        <div class="profileMain">
+            <div class="profCard centerer">
+                <h1 class="profileName">Settings</h1>
+            </div>
+            <form class="profCard">
+                <h2 class="cardHead">Preferences</h2>
+                <h3 class="cardHead">Enter your availability:</h3>
+                <input type="text" val="" class="searchInput" id="availability"/>
+                <h3 class="cardHead">Pick your preferred study method:</h3>
+                <div class="radioGroup">
+                    <label class="radio">
+                        <input class="radio__input" type="radio" name="studyMethod" id="practiceProblems" />
+                        <span class="radio__label">Practice Problems</span>
+                    </label>
+                    <label class="radio">
+                        <input class="radio__input" type="radio" name="studyMethod" id="discussion" />
+                        <span class="radio__label">Discussion</span>
+                    </label>
+                    <label class="radio">
+                        <input class="radio__input" type="radio" name="studyMethod" id="flashcards" />
+                        <span class="radio__label">Flashcards</span>
+                    </label>
+                </div>
+                <h3 class="cardHead">Enter your preferred number of group members:</h3>
+                <input type="number" val="4" class="searchInput" id="numMembers"/>
+                <h3 class="cardHead">Pick your preferred study mode:</h3>
+                <div class="radioGroup">
+                    <label class="radio">
+                        <input class="radio__input" type="radio" name="studyMode" id="inPerson" />
+                        <span class="radio__label">In Person</span>
+                    </label>
+                    <label class="radio">
+                        <input class="radio__input" type="radio" name="studyMode" id="online" />
+                        <span class="radio__label">Online</span>
+                    </label>
+                    <label class="radio">
+                        <input class="radio__input" type="radio" name="studyMode" id="either" />
+                        <span class="radio__label">Either</span>
+                    </label>
+                </div>
+                <h3 class="cardHead">Enter any additional preference notes:</h3>
+                <input type="text" val="" class="searchInput" id="notes"/>
+                <div class="centerer">
+                    <button class="groupButton" style="margin-top: 0;">Save Preferences</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

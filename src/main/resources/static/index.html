@@ -1,21 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Group Matching</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<main>
-    <h1>Study Group Matching</h1>
-    <p>ACM Project Committee - Fall 2026</p>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+        <title>Study Group Matching - Dashboard</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <div class="menuToggle">
+            <input type="checkbox" id="toggle"/>
+            <div class="menuCircle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar bLast"></span>
+            </div>
+            <div class="menu">
+                <p class="webName"><strong>Study Group Finder</strong></p>
+                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+                <li><span>Profile</span></li>
+                <li><span>Dashboard</span></li>
+                <li><span>Find Groups</span></li>
+                <li><span>Settings</span></li>
+            </div>
+        </div>
+        <div class="profileMain">
+            <div class="nameHead profCard">
+                <h1 class="profileName">My Study Groups</h1>
+            </div>
 
-    <button id="checkApiButton">Check API</button>
-
-    <p id="apiStatus"></p>
-</main>
-
-<script src="js/app.js"></script>
-</body>
+            <div class="groupHolder">
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+                <div class="dashCard">
+                    <div class="groupHead">
+                        <h2 class="cardHead gTitle">Name of Study Group</h2>
+                        <p class="csc course">CSC 116</p>
+                    </div>
+                    <p>Description for study group?</p>
+                    <div class="centerer">
+                        <button class="groupButton">Go to Group</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
