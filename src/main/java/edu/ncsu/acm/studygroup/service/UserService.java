@@ -2,6 +2,9 @@ package edu.ncsu.acm.studygroup.service;
 
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.UserRepository;
+import edu.ncsu.acm.studygroup.entity.GroupMember;
+import edu.ncsu.acm.studygroup.entity.StudyGroup;
+import edu.ncsu.acm.studygroup.repository.GroupMemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +23,21 @@ public class UserService {
     private final UserRepository userRepository;
 
     /**
+     * Repository used to access and modify Group Member records.
+     */
+    private final GroupMemberRepository groupMemberRepository;
+
+    /**
      * Creates the service using constructor injection.
      *
      * @param userRepository repository used for user persistence
      */
-    public UserService(final UserRepository userRepository) {
+    public UserService(
+            final UserRepository userRepository,
+            final GroupMemberRepository groupMemberRepository) {
+
         this.userRepository = userRepository;
+        this.groupMemberRepository = groupMemberRepository;
     }
 
     /**
@@ -115,4 +127,26 @@ public class UserService {
     public boolean ncsuIdExists(final String ncsuId) {
         return userRepository.findByNcsuId(ncsuId).isPresent();
     }
+
+    /**
+     * Returns all study groups that a user belongs to.
+     *
+     * @param userId ID of the user
+     * @return list of study groups the user belongs to
+     */
+    public List<StudyGroup> getStudyGroupsForUser(final Long userId) {
+
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            return List.of();
+        }
+
+        return groupMemberRepository.findByUser(user.get())
+                .stream()
+                .map(GroupMember::getStudyGroup)
+                .toList();
+    }
+
 }
+

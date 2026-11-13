@@ -116,6 +116,7 @@ public class User {
     /**
      * Stores all requests this user has submitted to join study groups.
      */
+    @JsonIgnore
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,

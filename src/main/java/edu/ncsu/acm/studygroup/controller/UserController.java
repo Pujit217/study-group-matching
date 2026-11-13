@@ -2,6 +2,7 @@ package edu.ncsu.acm.studygroup.controller;
 
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.service.UserService;
+import edu.ncsu.acm.studygroup.entity.StudyGroup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,5 +117,24 @@ public class UserController {
         userService.deleteUser(userId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Returns all study groups that a user belongs to.
+     *
+     * @param userId ID of the user
+     * @return user's study groups or 404 if the user does not exist
+     */
+    @GetMapping("/{userId}/study-groups")
+    public ResponseEntity<List<StudyGroup>> getUserStudyGroups(
+            @PathVariable final Long userId) {
+
+        if (userService.getUserById(userId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(
+                userService.getStudyGroupsForUser(userId)
+        );
     }
 }

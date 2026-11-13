@@ -2,6 +2,7 @@ package edu.ncsu.acm.studygroup.service;
 
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.UserRepository;
+import edu.ncsu.acm.studygroup.repository.GroupMemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,6 +23,8 @@ class UserServiceTest {
      */
     private UserRepository userRepository;
 
+    private GroupMemberRepository groupMemberRepository;
+
     /**
      * Service being tested.
      */
@@ -33,7 +36,12 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        groupMemberRepository = Mockito.mock(GroupMemberRepository.class);
+
+        userService = new UserService(
+                userRepository,
+                groupMemberRepository
+        );
     }
 
     /**
