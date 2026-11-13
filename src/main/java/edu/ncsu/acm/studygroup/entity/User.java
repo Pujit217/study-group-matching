@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class User {
      * Stores the study-group memberships belonging to this user.
      * A user can belong to multiple study groups.
      */
+    @JsonIgnore
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -428,6 +430,7 @@ public class User {
      *
      * @return list of study groups
      */
+    @JsonIgnore
     public List<StudyGroup> getStudyGroups() {
         return groupMemberships.stream()
                 .map(GroupMember::getStudyGroup)

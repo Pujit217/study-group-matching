@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -100,6 +101,7 @@ public class StudyGroup {
     /**
      * Stores all users who currently belong to this study group.
      */
+    @JsonIgnore
     @OneToMany(
             mappedBy = "studyGroup",
             cascade = CascadeType.ALL,

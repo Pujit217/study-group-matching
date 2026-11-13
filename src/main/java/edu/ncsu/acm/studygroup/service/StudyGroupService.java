@@ -282,7 +282,10 @@ public class StudyGroupService {
         }
 
         GroupMember existingMembership = membership.get();
+
         group.getMembers().remove(existingMembership);
+        groupMemberRepository.delete(existingMembership);
+
         return true;
     }
 

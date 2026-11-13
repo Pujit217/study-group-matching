@@ -451,6 +451,8 @@ public class StudyGroupServiceTest {
 
         assertTrue(result);
         assertTrue(group.getMembers().isEmpty());
+
+        verify(groupMemberRepository).delete(membership);
     }
 
     /**

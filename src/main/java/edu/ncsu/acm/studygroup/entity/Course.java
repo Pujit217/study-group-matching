@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class Course {
     /**
      * Stores all study groups that were created for this course.
      */
+    @JsonIgnore
     @OneToMany(
             mappedBy = "course",
             cascade = CascadeType.ALL,

@@ -1,0 +1,66 @@
+### Create a study group
+POST http://localhost:8080/api/study-groups
+Content-Type: application/json
+
+{
+  "name": "CSC326 Study Group",
+  "description": "Study group for CSC326 project and exam prep",
+  "courseId": 1,
+  "sectionId": 1,
+  "createdByUserId": 1,
+  "maxSize": 5,
+  "studyMode": "In-person",
+  "meetingLocation": "Hunt Library",
+  "meetingTimes": "Friday 5 PM",
+  "meetingDurationMinutes": 90
+}
+
+
+### Get members of study group 1
+GET http://localhost:8080/api/study-groups/1/members
+
+
+### Add user 3 to study group 1
+POST http://localhost:8080/api/study-groups/1/members/3
+
+### Remove user 3 from study group 1
+DELETE http://localhost:8080/api/study-groups/1/members/3
+
+### Create join request - User 3 wants to join Group 1
+POST http://localhost:8080/api/join-requests
+Content-Type: application/json
+
+{
+  "userId": 3,
+  "studyGroupId": 1,
+  "message": "I would like to join this study group."
+}
+
+### Accept join request 1
+PUT http://localhost:8080/api/join-requests/1/accept
+
+### Create request for reject test
+POST http://localhost:8080/api/join-requests
+Content-Type: application/json
+
+{
+  "userId": 4,
+  "studyGroupId": 1,
+  "message": "Testing reject."
+}
+
+### Reject join request 2
+PUT http://localhost:8080/api/join-requests/2/reject
+
+### Create request for cancel test
+POST http://localhost:8080/api/join-requests
+Content-Type: application/json
+
+{
+  "userId": 4,
+  "studyGroupId": 1,
+  "message": "Testing cancel."
+}
+
+### Cancel join request 3
+PUT http://localhost:8080/api/join-requests/3/cancel

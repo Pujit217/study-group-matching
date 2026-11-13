@@ -68,6 +68,7 @@ public class Section {
      * Stores study groups that specifically target this section.
      * A study group may also exist without a specific section.
      */
+    @JsonIgnore
     @OneToMany(mappedBy = "section")
     private List<StudyGroup> studyGroups = new ArrayList<>();
 
