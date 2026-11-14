@@ -1,120 +1,612 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-        <title>Study Group Matching - Dashboard</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div class="menuToggle">
-            <input type="checkbox" id="toggle"/>
-            <div class="menuCircle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar bLast"></span>
-            </div>
-            <div class="menu">
-                <p class="webName"><strong>Study Group Finder</strong></p>
-                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <li onclick="window.location.href='profile.html'">
-                    <span>Profile</span>
-                </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet">
 
-                <li onclick="window.location.href='index.html'">
-                    <span>Dashboard</span>
-                </li>
+    <title>Study Group Matching - Search Results</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-                <li onclick="window.location.href='search.html'">
-                    <span>Find Groups</span>
-                </li>
+<body>
 
-                <li onclick="window.location.href='settings.html'">
-                    <span>Settings</span>
-                </li>
-            </div>
+<div class="menuToggle">
+    <input type="checkbox" id="toggle"/>
+
+    <div class="menuCircle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+    </div>
+
+    <div class="menu">
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+        <img class="menuPFP"
+             src="imgs/profilePlaceholder.png"
+             alt="Profile"/>
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+    </div>
+</div>
+
+
+<div class="profileMain">
+
+    <div class="nameHead profCard">
+
+        <h1 class="profileName"
+            id="resultsTitle">
+            Search Results
+        </h1>
+
+    </div>
+
+
+    <div class="groupHolder"
+         id="groupHolder">
+
+        <div class="dashCard">
+            <h2 class="cardHead">
+                Loading groups...
+            </h2>
         </div>
-        <div class="profileMain">
-            <div class="nameHead profCard">
-                <h1 class="profileName">Results for "CSC 116 003"</h1>
-            </div>
 
-            <div class="groupHolder">
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+ * Get the currently logged-in user.
+ */
+    const CURRENT_USER_ID =
+        Number(sessionStorage.getItem("currentUserId"));
+
+    /*
+     * Users must be logged in to search for study groups.
+     */
+    if (!CURRENT_USER_ID) {
+        window.location.href = "login.html";
+    }
+
+
+    /*
+     * Read search information from the URL.
+     *
+     * Example:
+     * results.html?classCode=CSC326&section=001
+     */
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const requestedClassCode =
+        (params.get("classCode") || "")
+            .replace(/\s+/g, "")
+            .toUpperCase();
+
+    const requestedSection =
+        (params.get("section") || "")
+            .trim();
+
+
+    const groupHolder =
+        document.getElementById("groupHolder");
+
+    const resultsTitle =
+        document.getElementById("resultsTitle");
+
+
+    /*
+     * IDs of groups the current user already belongs to.
+     */
+    let currentUserGroupIds = new Set();
+
+
+    /*
+     * Display the search query.
+     */
+    if (requestedSection) {
+
+        resultsTitle.textContent =
+            `Results for "${requestedClassCode} ${requestedSection}"`;
+
+    } else {
+
+        resultsTitle.textContent =
+            `Results for "${requestedClassCode}"`;
+
+    }
+
+
+    /*
+     * Normalize section numbers.
+     *
+     * 1, 01, and 001 are treated as the same section.
+     */
+    function normalizeSection(section) {
+
+        if (!section) {
+            return "";
+        }
+
+        const numeric =
+            Number(section);
+
+        if (Number.isNaN(numeric)) {
+            return String(section).toUpperCase();
+        }
+
+        return String(numeric);
+    }
+
+
+    /*
+     * Load groups the current user already belongs to.
+     *
+     * This prevents displaying "Send Join Request"
+     * for a group where the user is already a member.
+     */
+    async function loadCurrentUserGroups() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${CURRENT_USER_ID}/study-groups`
+                );
+
+            if (!response.ok) {
+
+                console.warn(
+                    "Could not load current user's groups."
+                );
+
+                return;
+            }
+
+            const groups =
+                await response.json();
+
+            currentUserGroupIds =
+                new Set(
+                    groups.map(group => group.groupId)
+                );
+
+        } catch (error) {
+
+            console.error(
+                "Error loading current user's groups:",
+                error
+            );
+        }
+    }
+
+
+    /*
+     * Load every study group and filter the results
+     * using the requested course and section.
+     */
+    async function loadGroups() {
+
+        try {
+
+            /*
+             * First determine which groups the current user
+             * already belongs to.
+             */
+            await loadCurrentUserGroups();
+
+
+            const response =
+                await fetch("/api/study-groups");
+
+            if (!response.ok) {
+                throw new Error(
+                    "Could not load study groups."
+                );
+            }
+
+            const groups =
+                await response.json();
+
+
+            const matchingGroups =
+                groups.filter(group => {
+
+                    const groupCourseCode =
+                        (group.course?.courseCode || "")
+                            .replace(/\s+/g, "")
+                            .toUpperCase();
+
+
+                    if (groupCourseCode !== requestedClassCode) {
+                        return false;
+                    }
+
+
+                    /*
+                     * If no section was entered,
+                     * groups from any section are acceptable.
+                     */
+                    if (!requestedSection) {
+                        return true;
+                    }
+
+
+                    const groupSection =
+                        group.section?.sectionNumber || "";
+
+
+                    return normalizeSection(groupSection) ===
+                        normalizeSection(requestedSection);
+
+                });
+
+
+            displayGroups(matchingGroups);
+
+        } catch (error) {
+
+            console.error(
+                "Error loading study groups:",
+                error
+            );
+
+            groupHolder.innerHTML = `
                 <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
-                    </div>
+
+                    <h2 class="cardHead">
+                        Unable to Load Study Groups
+                    </h2>
+
+                    <p>
+                        There was a problem retrieving the groups.
+                    </p>
+
                 </div>
+            `;
+
+        }
+
+    }
+
+
+    /*
+     * Display matching study groups.
+     */
+    function displayGroups(groups) {
+
+        groupHolder.innerHTML = "";
+
+
+        if (groups.length === 0) {
+
+            groupHolder.innerHTML = `
                 <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
+
+                    <h2 class="cardHead">
+                        No Study Groups Found
+                    </h2>
+
+                    <p>
+                        No groups currently match your search.
+                    </p>
+
                     <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
+
+                        <button
+                            class="groupButton"
+                            onclick="window.location.href='search.html'">
+                            Search Again
+                        </button>
+
                     </div>
+
                 </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
-                    </div>
+            `;
+
+            return;
+        }
+
+
+        groups.forEach(group => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "dashCard";
+
+
+            const groupName =
+                group.name ||
+                "Unnamed Study Group";
+
+
+            const courseCode =
+                group.course?.courseCode ||
+                "No Course";
+
+
+            const description =
+                group.description ||
+                "No description has been added.";
+
+
+            const sectionNumber =
+                group.section?.sectionNumber;
+
+
+            const alreadyMember =
+                currentUserGroupIds.has(group.groupId);
+
+
+            /*
+             * A member gets a status message.
+             * A non-member gets the Send Join Request button.
+             */
+            const joinArea = alreadyMember
+                ? `
+                    <p id="joinStatus-${group.groupId}"
+                       style="font-weight: bold;">
+                        You are already a member of this group.
+                    </p>
+                  `
+                : `
+                    <button
+                        class="groupButton"
+                        id="joinButton-${group.groupId}"
+                        onclick="sendJoinRequest(${group.groupId})">
+                        Send Join Request
+                    </button>
+
+                    <p id="joinStatus-${group.groupId}"></p>
+                  `;
+
+
+            card.innerHTML = `
+
+                <div class="groupHead">
+
+                    <h2 class="cardHead gTitle">
+                        ${escapeHtml(groupName)}
+                    </h2>
+
+                    <p class="csc course">
+                        ${escapeHtml(courseCode)}
+                    </p>
+
                 </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
-                    </div>
+
+
+                <p>
+                    ${escapeHtml(description)}
+                </p>
+
+
+                ${
+                sectionNumber
+                    ? `
+                            <p>
+                                <strong>Section:</strong>
+                                ${escapeHtml(sectionNumber)}
+                            </p>
+                          `
+                    : ""
+            }
+
+
+                <div class="centerer">
+
+                    <button
+                        class="groupButton"
+                        onclick="viewGroup(${group.groupId})">
+                        View Group
+                    </button>
+
+                    ${joinArea}
+
                 </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Send Join Request</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
+            `;
+
+
+            groupHolder.appendChild(card);
+
+        });
+
+    }
+
+
+    /*
+     * Send a request to join a study group.
+     */
+    async function sendJoinRequest(groupId) {
+
+        const button =
+            document.getElementById(
+                `joinButton-${groupId}`
+            );
+
+        const status =
+            document.getElementById(
+                `joinStatus-${groupId}`
+            );
+
+
+        /*
+         * Prevent the user from clicking multiple times
+         * while the request is being processed.
+         */
+        button.disabled = true;
+        button.textContent = "Sending...";
+
+        status.textContent = "";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/join-requests",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            userId: CURRENT_USER_ID,
+                            studyGroupId: groupId,
+                            message:
+                                "I would like to join this study group."
+                        })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                let errorMessage =
+                    "Unable to send join request.";
+
+                /*
+                 * Try to read an error message from the backend
+                 * if one was returned.
+                 */
+                try {
+
+                    const errorBody =
+                        await response.json();
+
+                    if (errorBody.message) {
+                        errorMessage =
+                            errorBody.message;
+                    }
+
+                } catch (ignored) {
+                    // Response did not contain JSON.
+                }
+
+
+                throw new Error(errorMessage);
+            }
+
+
+            const request =
+                await response.json();
+
+
+            /*
+             * Successful request.
+             */
+            button.textContent =
+                "Request Sent";
+
+            button.disabled =
+                true;
+
+            status.textContent =
+                `Join request is ${request.status || "PENDING"}.`;
+
+
+        } catch (error) {
+
+            console.error(
+                "Error sending join request:",
+                error
+            );
+
+
+            status.textContent =
+                error.message;
+
+
+            /*
+             * Allow the user to retry.
+             */
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Send Join Request";
+
+        }
+
+    }
+
+
+    /*
+     * Open the selected group's page.
+     */
+    function viewGroup(groupId) {
+
+        window.location.href =
+            `group.html?groupId=${groupId}`;
+
+    }
+
+    /*
+ * Log out the current user.
+ */
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    }
+
+
+    /*
+     * Prevent text loaded from the database
+     * from being interpreted as HTML.
+     */
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            String(value ?? "");
+
+        return div.innerHTML;
+
+    }
+
+
+    loadGroups();
+
+</script>
+
+</body>
 </html>

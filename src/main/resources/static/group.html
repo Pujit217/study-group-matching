@@ -1,82 +1,681 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-        <title>Study Group Matching - Profile</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div class="menuToggle">
-            <input type="checkbox" id="toggle"/>
-            <div class="menuCircle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar bLast"></span>
-            </div>
-            <div class="menu">
-                <p class="webName"><strong>Study Group Finder</strong></p>
-                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <li onclick="window.location.href='profile.html'">
-                    <span>Profile</span>
-                </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet">
 
-                <li onclick="window.location.href='index.html'">
-                    <span>Dashboard</span>
-                </li>
+    <title>Study Group Matching - Group</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-                <li onclick="window.location.href='search.html'">
-                    <span>Find Groups</span>
-                </li>
+<body>
 
-                <li onclick="window.location.href='settings.html'">
-                    <span>Settings</span>
-                </li>
-            </div>
+<div class="menuToggle">
+    <input type="checkbox" id="toggle"/>
+
+    <div class="menuCircle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+    </div>
+
+    <div class="menu">
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+        <img class="menuPFP"
+             src="imgs/profilePlaceholder.png"
+             alt="Profile"/>
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+    </div>
+</div>
+
+
+<div class="profileMain">
+
+    <!-- Group header -->
+    <div class="nameHead profCard">
+
+        <img src="imgs/profilePlaceholder.png"
+             class="profilePFP"
+             alt="Group"/>
+
+        <h1 class="profileName" id="groupName">
+            Loading...
+        </h1>
+
+        <p class="csc course"
+           id="courseCode"
+           style="margin-left: auto;">
+            Course
+        </p>
+
+    </div>
+
+
+    <!-- Description -->
+    <div class="profCard">
+
+        <h2 class="cardHead">
+            Details
+        </h2>
+
+        <p id="groupDescription">
+            Loading group details...
+        </p>
+
+    </div>
+
+
+    <!-- Meeting information -->
+    <div class="profCard important">
+
+        <h2 class="cardHead">
+            Next Meeting
+        </h2>
+
+        <p class="node"
+           id="meetingInfo"
+           style="font-size: large; font-weight: bold;">
+            Loading...
+        </p>
+
+    </div>
+
+
+    <!-- Members -->
+    <div class="profCard coursesTitle">
+
+        <h2 class="cardHead">
+            Current Members
+        </h2>
+
+        <div class="prefHolder"
+             id="memberHolder">
+
+            <p class="nodeB">
+                Loading members...
+            </p>
+
         </div>
-        <div class="profileMain">
-            <div class="nameHead profCard">
-                <img src="imgs/profilePlaceholder.png" class="profilePFP"/>
-                <h1 class="profileName">Test Group</h1>
-                <p class="csc course" style="margin-left: auto;">CSC 116</p>
-            </div>
 
-            <div class="profCard">
-                <h2 class="cardHead">Details</h2>
-                <p>This group hasn't added a description to their page yet!</p>
-            </div>
+    </div>
 
-            <div class="profCard important">
-                <h2 class="cardHead">Next Meeting</h2>
-                <p class="node" style="font-size: large; font-weight: bold;">Thursday (Nov 5) at 3:00pm</p>
-            </div>
 
-            <div class="profCard coursesTitle">
-                <h2 class="cardHead">Current Members</h2>
-                <div class="prefHolder">
-                    <p class="nodeB">JRR Tolkein</p>
-                    <p class="nodeB">CS Lewis</p>
-                    <p class="nodeB">Jane Austen</p>
-                    <p class="nodeB">Mary Shelley</p>
-                    <p class="nodeB">Bram Stoker</p>
-                </div>
-            </div>
+    <!-- Group structure -->
+    <div class="profCard">
 
-            <div class="profCard">
-                <h2 class="cardHead">Structure</h2>
-                <p class="invisible">This user hasn't added their preferences yet!</p>
-                <div class="prefHolder">
-                    <p class="node">Casual</p>
-                    <p class="node">Review problems</p>
-                    <p class="node">Preference 3</p>
-                    <p class="node">Weekly</p>
-                    <p class="node">Another preference</p>
-                </div>
-            </div>
+        <h2 class="cardHead">
+            Structure
+        </h2>
+
+        <div class="prefHolder"
+             id="structureHolder">
+
+            <p class="node"
+               id="studyMode">
+                Study Mode
+            </p>
+
+            <p class="node"
+               id="meetingLocation">
+                Location
+            </p>
+
+            <p class="node"
+               id="meetingDuration">
+                Duration
+            </p>
+
+            <p class="node"
+               id="groupSize">
+                Group Size
+            </p>
+
         </div>
-    </body>
+
+    </div>
+
+    <!-- Group Chat -->
+    <div class="profCard">
+
+        <h2 class="cardHead">
+            Group Chat
+        </h2>
+
+        <div id="chatMessages" class="chatMessages">
+            <p class="chatStatus">Loading messages...</p>
+        </div>
+
+        <div class="chatInputHolder">
+
+            <input
+                    type="text"
+                    id="messageInput"
+                    class="chatInput"
+                    placeholder="Type a message..."
+                    maxlength="2000"
+            >
+
+            <button
+                    type="button"
+                    id="sendMessageButton"
+                    class="chatSendButton"
+                    onclick="sendMessage()">
+                Send
+            </button>
+
+        </div>
+
+        <p id="chatError" class="chatError"></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const CURRENT_USER_ID =
+        Number(sessionStorage.getItem("currentUserId"));
+
+    if (!CURRENT_USER_ID) {
+        window.location.href = "login.html";
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    }
+
+    /*
+     * Get the groupId from the URL.
+     *
+     * Example:
+     * group.html?groupId=1
+     */
+    const params = new URLSearchParams(window.location.search);
+    const groupId = params.get("groupId");
+
+
+    /*
+     * If no groupId was supplied, the page cannot determine
+     * which group should be displayed.
+     */
+    if (!groupId) {
+
+        document.getElementById("groupName").textContent =
+            "Group Not Found";
+
+        document.getElementById("groupDescription").textContent =
+            "No study group was selected.";
+
+        document.getElementById("meetingInfo").textContent =
+            "No meeting information available.";
+
+        document.getElementById("memberHolder").innerHTML =
+            '<p class="nodeB">No group selected</p>';
+
+    } else {
+
+        loadGroup();
+        loadMembers();
+        loadMessages();
+    }
+
+
+    /*
+     * Loads the study group's main information.
+     */
+    async function loadGroup() {
+
+        try {
+
+            const response =
+                await fetch(`/api/study-groups/${groupId}`);
+
+            if (!response.ok) {
+                throw new Error("Study group could not be loaded.");
+            }
+
+            const group = await response.json();
+
+
+            /*
+             * Group name
+             */
+            document.getElementById("groupName").textContent =
+                group.name || "Unnamed Study Group";
+
+
+            /*
+             * Course code
+             */
+            document.getElementById("courseCode").textContent =
+                group.course?.courseCode || "No Course";
+
+
+            /*
+             * Description
+             */
+            document.getElementById("groupDescription").textContent =
+                group.description ||
+                "This group hasn't added a description to their page yet!";
+
+
+            /*
+             * Meeting time
+             */
+            document.getElementById("meetingInfo").textContent =
+                group.meetingTimes ||
+                "No meeting time has been scheduled.";
+
+
+            /*
+             * Study mode
+             */
+            document.getElementById("studyMode").textContent =
+                group.studyMode ||
+                "Study mode not specified";
+
+
+            /*
+             * Meeting location
+             */
+            document.getElementById("meetingLocation").textContent =
+                group.meetingLocation ||
+                "Location not specified";
+
+
+            /*
+             * Meeting duration
+             */
+            if (group.meetingDurationMinutes) {
+
+                document.getElementById("meetingDuration").textContent =
+                    group.meetingDurationMinutes + " minutes";
+
+            } else {
+
+                document.getElementById("meetingDuration").textContent =
+                    "Duration not specified";
+
+            }
+
+
+            /*
+             * Group size
+             */
+            if (group.maxSize) {
+
+                document.getElementById("groupSize").textContent =
+                    "Maximum " + group.maxSize + " members";
+
+            } else {
+
+                document.getElementById("groupSize").textContent =
+                    "Group size not specified";
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error loading study group:",
+                error
+            );
+
+            document.getElementById("groupName").textContent =
+                "Unable to Load Group";
+
+            document.getElementById("groupDescription").textContent =
+                "There was a problem loading this study group.";
+
+            document.getElementById("meetingInfo").textContent =
+                "Meeting information unavailable.";
+
+        }
+
+    }
+
+
+    /*
+     * Loads all members belonging to the study group.
+     */
+    async function loadMembers() {
+
+        const memberHolder =
+            document.getElementById("memberHolder");
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/study-groups/${groupId}/members`
+                );
+
+            if (!response.ok) {
+                throw new Error("Members could not be loaded.");
+            }
+
+            const memberships =
+                await response.json();
+
+
+            /*
+             * Remove the temporary "Loading members..."
+             * message.
+             */
+            memberHolder.innerHTML = "";
+
+
+            /*
+             * Handle an empty group.
+             */
+            if (memberships.length === 0) {
+
+                memberHolder.innerHTML =
+                    '<p class="nodeB">No members yet</p>';
+
+                return;
+
+            }
+
+
+            /*
+             * Each result is a GroupMember object.
+             * The user's information is stored inside
+             * the "user" property.
+             */
+            memberships.forEach(membership => {
+
+                const member =
+                    document.createElement("p");
+
+                member.className =
+                    "nodeB";
+
+                member.textContent =
+                    membership.user?.name ||
+                    "Unknown Member";
+
+                memberHolder.appendChild(member);
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Error loading members:",
+                error
+            );
+
+            memberHolder.innerHTML =
+                '<p class="nodeB">Unable to load members</p>';
+
+        }
+
+    }
+
+    /*
+ * Loads all chat messages for the current study group.
+ */
+    async function loadMessages() {
+
+        const chatMessages =
+            document.getElementById("chatMessages");
+
+        try {
+
+            const response =
+                await fetch(`/api/messages/group/${groupId}`);
+
+            if (!response.ok) {
+                throw new Error("Messages could not be loaded.");
+            }
+
+            const messages =
+                await response.json();
+
+            chatMessages.innerHTML = "";
+
+            if (messages.length === 0) {
+
+                chatMessages.innerHTML =
+                    '<p class="chatStatus">No messages yet. Start the conversation!</p>';
+
+                return;
+            }
+
+            messages.forEach(message => {
+
+                const messageContainer =
+                    document.createElement("div");
+
+                /*
+                 * Give our own messages a separate class so
+                 * we can display them on the right.
+                 */
+                if (Number(message.senderId) === CURRENT_USER_ID) {
+
+                    messageContainer.className =
+                        "chatMessage chatMessageOwn";
+
+                } else {
+
+                    messageContainer.className =
+                        "chatMessage";
+
+                }
+
+
+                const sender =
+                    document.createElement("strong");
+
+                sender.className =
+                    "chatSender";
+
+                sender.textContent =
+                    message.senderName || "Unknown User";
+
+
+                const content =
+                    document.createElement("p");
+
+                content.className =
+                    "chatContent";
+
+                content.textContent =
+                    message.content;
+
+
+                const time =
+                    document.createElement("span");
+
+                time.className =
+                    "chatTime";
+
+                if (message.sentAt) {
+
+                    const date =
+                        new Date(message.sentAt);
+
+                    time.textContent =
+                        date.toLocaleString();
+
+                }
+
+
+                messageContainer.appendChild(sender);
+                messageContainer.appendChild(content);
+                messageContainer.appendChild(time);
+
+                chatMessages.appendChild(messageContainer);
+
+            });
+
+
+            /*
+             * Automatically scroll to the newest message.
+             */
+            chatMessages.scrollTop =
+                chatMessages.scrollHeight;
+
+        } catch (error) {
+
+            console.error(
+                "Error loading messages:",
+                error
+            );
+
+            chatMessages.innerHTML =
+                '<p class="chatStatus">Unable to load messages.</p>';
+
+        }
+
+    }
+
+
+    /*
+     * Sends a new chat message using the currently logged-in user.
+     */
+    async function sendMessage() {
+
+        const input =
+            document.getElementById("messageInput");
+
+        const errorDisplay =
+            document.getElementById("chatError");
+
+        const sendButton =
+            document.getElementById("sendMessageButton");
+
+        const content =
+            input.value.trim();
+
+        errorDisplay.textContent = "";
+
+        if (!content) {
+
+            errorDisplay.textContent =
+                "Please enter a message.";
+
+            return;
+        }
+
+        try {
+
+            sendButton.disabled = true;
+
+            const response =
+                await fetch("/api/messages", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        studyGroupId: Number(groupId),
+                        senderId: CURRENT_USER_ID,
+                        content: content
+                    })
+
+                });
+
+
+            if (!response.ok) {
+
+                const errorMessage =
+                    await response.text();
+
+                throw new Error(
+                    errorMessage || "Message could not be sent."
+                );
+
+            }
+
+
+            /*
+             * Clear the input after successful send.
+             */
+            input.value = "";
+
+
+            /*
+             * Reload the conversation so the new message
+             * immediately appears.
+             */
+            await loadMessages();
+
+            input.focus();
+
+        } catch (error) {
+
+            console.error(
+                "Error sending message:",
+                error
+            );
+
+            errorDisplay.textContent =
+                "Unable to send message.";
+
+        } finally {
+
+            sendButton.disabled = false;
+
+        }
+
+    }
+
+
+    /*
+     * Allow Enter to send the message.
+     */
+    document
+        .getElementById("messageInput")
+        .addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+                sendMessage();
+
+            }
+
+        });
+
+</script>
+
+</body>
 </html>

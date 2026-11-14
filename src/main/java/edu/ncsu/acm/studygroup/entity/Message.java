@@ -1,5 +1,6 @@
 package edu.ncsu.acm.studygroup.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,6 +34,7 @@ public class Message {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_group_id", nullable = false)
+    @JsonIgnore
     private StudyGroup studyGroup;
 
     /**
@@ -40,6 +42,7 @@ public class Message {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
+    @JsonIgnore
     private User sender;
 
     /**

@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+            href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+            rel="stylesheet">
+
+    <title>Study Group Matching - Create Group</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <style>
+
+        .createCard {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 30px;
+        }
+
+        .formGroup {
+            margin-bottom: 20px;
+        }
+
+        .formGroup label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .formGroup input,
+        .formGroup select,
+        .formGroup textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-family: "Rubik", sans-serif;
+            font-size: 15px;
+        }
+
+        .formGroup textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .createButton {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #formStatus {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- Sidebar -->
+
+<div class="menuToggle">
+
+    <input type="checkbox"
+           id="toggle"/>
+
+    <div class="menuCircle">
+
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+
+    </div>
+
+
+    <div class="menu">
+
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+
+        <img
+                class="menuPFP"
+                src="imgs/profilePlaceholder.png"
+                alt="Profile picture"/>
+
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+
+    </div>
+
+</div>
+
+
+
+<!-- Main content -->
+
+<div class="profileMain">
+
+
+    <div class="nameHead profCard">
+
+        <h1 class="profileName">
+            Create Study Group
+        </h1>
+
+    </div>
+
+
+    <div class="dashCard createCard">
+
+
+        <form id="createGroupForm">
+
+
+            <!-- Group Name -->
+
+            <div class="formGroup">
+
+                <label for="groupName">
+                    Group Name
+                </label>
+
+                <input
+                        type="text"
+                        id="groupName"
+                        required
+                        placeholder="Example: CSC326 Study Group">
+
+            </div>
+
+
+
+            <!-- Course -->
+
+            <div class="formGroup">
+
+                <label for="course">
+                    Course
+                </label>
+
+                <select
+                        id="course"
+                        required>
+
+                    <option value="">
+                        Loading courses...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- Section -->
+
+            <div class="formGroup">
+
+                <label for="section">
+                    Section
+                </label>
+
+                <select id="section">
+
+                    <option value="">
+                        Select a course first
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- Description -->
+
+            <div class="formGroup">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                        id="description"
+                        placeholder="Describe what your study group will focus on."></textarea>
+
+            </div>
+
+
+
+            <!-- Study Mode -->
+
+            <div class="formGroup">
+
+                <label for="studyMode">
+                    Study Mode
+                </label>
+
+                <select
+                        id="studyMode"
+                        required>
+
+                    <option value="">
+                        Select study mode
+                    </option>
+
+                    <option value="IN_PERSON">
+                        In Person
+                    </option>
+
+                    <option value="ONLINE">
+                        Online
+                    </option>
+
+                    <option value="BOTH">
+                        Both
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- Meeting Location -->
+
+            <div class="formGroup">
+
+                <label for="meetingLocation">
+                    Meeting Location
+                </label>
+
+                <input
+                        type="text"
+                        id="meetingLocation"
+                        placeholder="Example: Hunt Library">
+
+            </div>
+
+
+
+            <!-- Meeting Times -->
+
+            <div class="formGroup">
+
+                <label for="meetingTimes">
+                    Meeting Time
+                </label>
+
+                <input
+                        type="text"
+                        id="meetingTimes"
+                        placeholder="Example: Tuesdays at 6 PM">
+
+            </div>
+
+
+
+            <!-- Duration -->
+
+            <div class="formGroup">
+
+                <label for="meetingDuration">
+                    Meeting Duration (minutes)
+                </label>
+
+                <input
+                        type="number"
+                        id="meetingDuration"
+                        min="1"
+                        value="60"
+                        required>
+
+            </div>
+
+
+
+            <!-- Maximum Members -->
+
+            <div class="formGroup">
+
+                <label for="maxSize">
+                    Maximum Members
+                </label>
+
+                <input
+                        type="number"
+                        id="maxSize"
+                        min="2"
+                        value="6"
+                        required>
+
+            </div>
+
+
+
+            <button
+                    type="submit"
+                    class="groupButton createButton"
+                    id="createButton">
+
+                Create Study Group
+
+            </button>
+
+
+            <p id="formStatus"></p>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    /*
+     * Current logged-in user.
+     */
+
+    const CURRENT_USER_ID =
+        Number(
+            sessionStorage.getItem(
+                "currentUserId"
+            )
+        );
+
+
+    /*
+     * Require login.
+     */
+
+    if (!CURRENT_USER_ID) {
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+
+    /*
+     * Load available courses.
+     */
+
+    async function loadCourses() {
+
+        const courseSelect =
+            document.getElementById(
+                "course"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/courses"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load courses."
+                );
+
+            }
+
+
+            const courses =
+                await response.json();
+
+
+            courseSelect.innerHTML =
+                `<option value="">
+                    Select a course
+                 </option>`;
+
+
+            courses.forEach(course => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    course.courseId;
+
+
+                option.textContent =
+                    `${course.courseCode} - ${course.courseName}`;
+
+
+                courseSelect.appendChild(
+                    option
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading courses:",
+                error
+            );
+
+
+            courseSelect.innerHTML =
+                `<option value="">
+                    Unable to load courses
+                 </option>`;
+
+        }
+
+    }
+
+
+
+    /*
+     * Load sections whenever a course is selected.
+     */
+
+    async function loadSections(
+        courseId
+    ) {
+
+        const sectionSelect =
+            document.getElementById(
+                "section"
+            );
+
+
+        if (!courseId) {
+
+            sectionSelect.innerHTML =
+                `<option value="">
+                    Select a course first
+                 </option>`;
+
+            return;
+
+        }
+
+
+        sectionSelect.innerHTML =
+            `<option value="">
+                Loading sections...
+             </option>`;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/courses/${courseId}/sections`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load sections."
+                );
+
+            }
+
+
+            const sections =
+                await response.json();
+
+
+            sectionSelect.innerHTML =
+                `<option value="">
+                    No specific section
+                 </option>`;
+
+
+            sections.forEach(section => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    section.sectionId;
+
+
+                option.textContent =
+                    `Section ${section.sectionNumber}`;
+
+
+                if (section.instructor) {
+
+                    option.textContent +=
+                        ` - ${section.instructor}`;
+
+                }
+
+
+                sectionSelect.appendChild(
+                    option
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading sections:",
+                error
+            );
+
+
+            sectionSelect.innerHTML =
+                `<option value="">
+                    Unable to load sections
+                 </option>`;
+
+        }
+
+    }
+
+
+
+    /*
+     * Course change listener.
+     */
+
+    document
+        .getElementById("course")
+        .addEventListener(
+            "change",
+            event => {
+
+                loadSections(
+                    event.target.value
+                );
+
+            }
+        );
+
+
+
+    /*
+     * Create the study group.
+     */
+
+    document
+        .getElementById(
+            "createGroupForm"
+        )
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                const createButton =
+                    document.getElementById(
+                        "createButton"
+                    );
+
+
+                const formStatus =
+                    document.getElementById(
+                        "formStatus"
+                    );
+
+
+                const courseId =
+                    Number(
+                        document.getElementById(
+                            "course"
+                        ).value
+                    );
+
+
+                const sectionValue =
+                    document.getElementById(
+                        "section"
+                    ).value;
+
+
+                /*
+                 * Build CreateStudyGroupDto.
+                 */
+
+                const groupData = {
+
+                    name:
+                        document
+                            .getElementById(
+                                "groupName"
+                            )
+                            .value
+                            .trim(),
+
+                    description:
+                        document
+                            .getElementById(
+                                "description"
+                            )
+                            .value
+                            .trim(),
+
+                    courseId:
+                    courseId,
+
+                    sectionId:
+                        sectionValue
+                            ? Number(sectionValue)
+                            : null,
+
+                    createdByUserId:
+                    CURRENT_USER_ID,
+
+                    maxSize:
+                        Number(
+                            document
+                                .getElementById(
+                                    "maxSize"
+                                )
+                                .value
+                        ),
+
+                    studyMode:
+                    document
+                        .getElementById(
+                            "studyMode"
+                        )
+                        .value,
+
+                    meetingLocation:
+                        document
+                            .getElementById(
+                                "meetingLocation"
+                            )
+                            .value
+                            .trim(),
+
+                    meetingTimes:
+                        document
+                            .getElementById(
+                                "meetingTimes"
+                            )
+                            .value
+                            .trim(),
+
+                    meetingDurationMinutes:
+                        Number(
+                            document
+                                .getElementById(
+                                    "meetingDuration"
+                                )
+                                .value
+                        )
+
+                };
+
+
+                createButton.disabled =
+                    true;
+
+
+                formStatus.textContent =
+                    "Creating study group...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/study-groups",
+                            {
+
+                                method:
+                                    "POST",
+
+                                headers: {
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        groupData
+                                    )
+
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        const errorText =
+                            await response.text();
+
+
+                        throw new Error(
+                            errorText ||
+                            "Unable to create study group."
+                        );
+
+                    }
+
+
+                    const createdGroup =
+                        await response.json();
+
+
+                    formStatus.textContent =
+                        "Study group created!";
+
+
+                    /*
+                     * Go directly to the newly-created group.
+                     */
+
+                    window.location.href =
+                        `group.html?groupId=${
+                            encodeURIComponent(
+                                createdGroup.groupId
+                            )
+                        }`;
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Error creating study group:",
+                        error
+                    );
+
+
+                    formStatus.textContent =
+                        error.message;
+
+
+                    createButton.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+
+
+    /*
+     * Logout.
+     */
+
+    function logout() {
+
+        sessionStorage.clear();
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+
+    /*
+     * Load page data.
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadCourses
+    );
+
+</script>
+
+
+</body>
+
+</html>

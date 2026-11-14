@@ -5,6 +5,9 @@ import edu.ncsu.acm.studygroup.repository.UserRepository;
 import edu.ncsu.acm.studygroup.entity.GroupMember;
 import edu.ncsu.acm.studygroup.entity.StudyGroup;
 import edu.ncsu.acm.studygroup.repository.GroupMemberRepository;
+import edu.ncsu.acm.studygroup.dto.StudyPreferenceDto;
+import edu.ncsu.acm.studygroup.entity.StudyPreference;
+import edu.ncsu.acm.studygroup.repository.StudyPreferenceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +30,8 @@ public class UserService {
      */
     private final GroupMemberRepository groupMemberRepository;
 
+    private final StudyPreferenceRepository studyPreferenceRepository;
+
     /**
      * Creates the service using constructor injection.
      *
@@ -34,10 +39,12 @@ public class UserService {
      */
     public UserService(
             final UserRepository userRepository,
-            final GroupMemberRepository groupMemberRepository) {
+            final GroupMemberRepository groupMemberRepository,
+            final StudyPreferenceRepository studyPreferenceRepository) {
 
         this.userRepository = userRepository;
         this.groupMemberRepository = groupMemberRepository;
+        this.studyPreferenceRepository = studyPreferenceRepository;
     }
 
     /**
@@ -147,6 +154,52 @@ public class UserService {
                 .map(GroupMember::getStudyGroup)
                 .toList();
     }
+    public Optional<StudyPreference> getPreferencesForUser(
+            final Long userId) {
 
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return studyPreferenceRepository.findByUser(user.get());
+    }
+
+
+    public Optional<StudyPreference> savePreferencesForUser(
+            final Long userId,
+            final StudyPreferenceDto dto) {
+
+        Optional<User> userOptional =
+                userRepository.findById(userId);
+
+        if (userOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+
+        StudyPreference preference =
+                studyPreferenceRepository
+                        .findByUser(user)
+                        .orElseGet(() ->
+                                new StudyPreference(user));
+
+        preference.updatePreferences(
+                dto.getAvailability(),
+                dto.getStudyStyle(),
+                dto.getPreferredGroupSize(),
+                dto.getStudyMode(),
+                dto.getAdditionalNotes()
+        );
+
+        StudyPreference saved =
+                studyPreferenceRepository.save(preference);
+
+        user.setStudyPreference(saved);
+
+        return Optional.of(saved);
+    }
 }
 

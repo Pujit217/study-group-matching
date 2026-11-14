@@ -3,6 +3,7 @@ package edu.ncsu.acm.studygroup.service;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.UserRepository;
 import edu.ncsu.acm.studygroup.repository.GroupMemberRepository;
+import edu.ncsu.acm.studygroup.repository.StudyPreferenceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,17 +31,23 @@ class UserServiceTest {
      */
     private UserService userService;
 
+    private StudyPreferenceRepository studyPreferenceRepository;
+
     /**
      * Creates fresh test objects before each test.
      */
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
-        groupMemberRepository = Mockito.mock(GroupMemberRepository.class);
+        groupMemberRepository =
+                Mockito.mock(GroupMemberRepository.class);
+        studyPreferenceRepository =
+                Mockito.mock(StudyPreferenceRepository.class);
 
         userService = new UserService(
                 userRepository,
-                groupMemberRepository
+                groupMemberRepository,
+                studyPreferenceRepository
         );
     }
 

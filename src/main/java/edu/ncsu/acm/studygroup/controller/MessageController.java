@@ -1,7 +1,8 @@
 package edu.ncsu.acm.studygroup.controller;
 
+import edu.ncsu.acm.studygroup.dto.MessageDto;
+import edu.ncsu.acm.studygroup.dto.MessageResponseDto;
 import edu.ncsu.acm.studygroup.entity.Message;
-import edu.ncsu.acm.studygroup.entity.StudyGroup;
 import edu.ncsu.acm.studygroup.service.MessageService;
 import edu.ncsu.acm.studygroup.service.StudyGroupService;
 import org.springframework.http.ResponseEntity;
@@ -47,32 +48,40 @@ public class MessageController {
      * @return ordered group chat messages or 404
      */
     @GetMapping("/group/{groupId}")
-    public ResponseEntity<List<Message>> getGroupMessages(
+    public ResponseEntity<List<MessageResponseDto>> getGroupMessages(
             @PathVariable final Long groupId) {
 
         return studyGroupService.getStudyGroupById(groupId)
-                .map(group ->
-                        ResponseEntity.ok(
-                                messageService
-                                        .getMessagesForGroup(group)
-                        )
-                )
+                .map(group -> ResponseEntity.ok(
+                        messageService.getMessagesForGroup(group)
+                                .stream()
+                                .map(this::toResponseDto)
+                                .toList()
+                ))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     /**
      * Creates and stores a new chat message.
      *
-     * @param message message information
+     * @param messageDto message information
      * @return saved message
      */
     @PostMapping
-    public ResponseEntity<Message> sendMessage(
-            @RequestBody final Message message) {
+    public ResponseEntity<?> sendMessage(
+            @RequestBody final MessageDto messageDto) {
 
-        return ResponseEntity.ok(
-                messageService.sendMessage(message)
-        );
+        try {
+            Message savedMessage =
+                    messageService.sendMessage(messageDto);
+
+            return ResponseEntity.ok(
+                    toResponseDto(savedMessage)
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
+        }
     }
 
     /**
@@ -83,19 +92,19 @@ public class MessageController {
      * @return updated message or 404
      */
     @PutMapping("/{messageId}")
-    public ResponseEntity<Message> editMessage(
+    public ResponseEntity<MessageResponseDto> editMessage(
             @PathVariable final Long messageId,
             @RequestBody final String newContent) {
 
         return messageService.getMessageById(messageId)
-                .map(message ->
-                        ResponseEntity.ok(
+                .map(message -> ResponseEntity.ok(
+                        toResponseDto(
                                 messageService.editMessage(
                                         message,
                                         newContent
                                 )
                         )
-                )
+                ))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -119,5 +128,25 @@ public class MessageController {
         messageService.deleteMessage(messageId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Converts a Message entity into a response DTO.
+     *
+     * @param message message to convert
+     * @return message response DTO
+     */
+    private MessageResponseDto toResponseDto(
+            final Message message) {
+
+        return new MessageResponseDto(
+                message.getMessageId(),
+                message.getStudyGroup().getGroupId(),
+                message.getSender().getUserId(),
+                message.getSender().getName(),
+                message.getContent(),
+                message.getSentAt(),
+                message.getEditedAt()
+        );
     }
 }

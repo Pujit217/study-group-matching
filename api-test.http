@@ -64,3 +64,93 @@ Content-Type: application/json
 
 ### Cancel join request 3
 PUT http://localhost:8080/api/join-requests/3/cancel
+
+### Sign up a new user
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Authentication Test",
+  "email": "authtest@ncsu.edu",
+  "ncsuId": "authtest",
+  "password": "password123"
+}
+
+
+### Login with correct credentials
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "authtest@ncsu.edu",
+  "password": "password123"
+}
+
+
+### Login with incorrect password
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "authtest@ncsu.edu",
+  "password": "wrongpassword"
+}
+
+
+### Try duplicate signup
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Duplicate User",
+  "email": "authtest@ncsu.edu",
+  "ncsuId": "differentid",
+  "password": "password123"
+}
+
+### Save preferences for user 1
+PUT http://localhost:8080/api/users/1/preferences
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "availability": "Monday and Wednesday 6-8 PM",
+  "studyStyle": "Practice Problems",
+  "preferredGroupSize": 4,
+  "studyMode": "In Person",
+  "additionalNotes": "I prefer studying before exams."
+}
+
+### Save preferences for user 1
+GET http://localhost:8080/api/users/1/preferences
+### Save preferences for user 1
+GET http://localhost:8080/api/users/1/study-groups
+
+### Pujit sends message to CSC326 group
+POST http://localhost:8080/api/messages
+Content-Type: application/json
+
+{
+  "studyGroupId": 1,
+  "senderId": 1,
+  "content": "Hey everyone! When should we meet to study?"
+}
+
+### Get CSC326 group messages
+GET http://localhost:8080/api/messages/group/1
+
+### Test Student replies
+POST http://localhost:8080/api/messages
+Content-Type: application/json
+
+{
+  "studyGroupId": 1,
+  "senderId": 2,
+  "content": "Tuesday evening works for me!"
+}
+
+### Get conversation
+GET http://localhost:8080/api/messages/group/1
+
+### Debug user's study groups
+GET http://localhost:8080/api/users/1/study-groups

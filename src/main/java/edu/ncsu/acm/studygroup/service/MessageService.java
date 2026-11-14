@@ -4,6 +4,9 @@ import edu.ncsu.acm.studygroup.entity.Message;
 import edu.ncsu.acm.studygroup.entity.StudyGroup;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.repository.MessageRepository;
+import edu.ncsu.acm.studygroup.dto.MessageDto;
+import edu.ncsu.acm.studygroup.repository.StudyGroupRepository;
+import edu.ncsu.acm.studygroup.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,14 +23,23 @@ public class MessageService {
      */
     private final MessageRepository messageRepository;
 
+    private final StudyGroupRepository studyGroupRepository;
+
+    private final UserRepository userRepository;
+
     /**
      * Creates the service using constructor injection.
      *
      * @param messageRepository repository used for message persistence
      */
     public MessageService(
-            final MessageRepository messageRepository) {
+            final MessageRepository messageRepository,
+            final StudyGroupRepository studyGroupRepository,
+            final UserRepository userRepository) {
+
         this.messageRepository = messageRepository;
+        this.studyGroupRepository = studyGroupRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -77,11 +89,35 @@ public class MessageService {
     /**
      * Creates and stores a new chat message.
      *
-     * @param message message to save
+     * @param messageDto message to save
      * @return saved message
      */
-    public Message sendMessage(final Message message) {
+    public Message sendMessage(final MessageDto messageDto) {
+
+        final StudyGroup studyGroup = studyGroupRepository
+                .findById(messageDto.getStudyGroupId())
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Study group not found"));
+
+        final User sender = userRepository
+                .findById(messageDto.getSenderId())
+                .orElseThrow(() ->
+                        new IllegalArgumentException("User not found"));
+
+        if (messageDto.getContent() == null
+                || messageDto.getContent().trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Message content cannot be empty");
+        }
+
+        final Message message = new Message(
+                studyGroup,
+                sender,
+                messageDto.getContent().trim()
+        );
+
         message.send();
+
         return messageRepository.save(message);
     }
 

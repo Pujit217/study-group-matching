@@ -46,6 +46,13 @@ public class User {
     private String email;
 
     /**
+     * Password used to authenticate the user.
+     * The stored value is a BCrypt hash rather than the raw password.
+     */
+    @JsonIgnore
+    private String password;
+
+    /**
      * NC State identifier associated with the student.
      * This value is unique when provided.
      */
@@ -215,6 +222,24 @@ public class User {
     }
 
     /**
+     * Returns the stored password hash.
+     *
+     * @return password hash
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Updates the stored password hash.
+     *
+     * @param password password hash
+     */
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    /**
      * Returns the student's NC State identifier.
      *
      * @return NC State identifier
@@ -365,6 +390,7 @@ public class User {
      *
      * @return study preference
      */
+    @JsonIgnore
     public StudyPreference getStudyPreference() {
         return studyPreference;
     }

@@ -3,6 +3,8 @@ package edu.ncsu.acm.studygroup.controller;
 import edu.ncsu.acm.studygroup.entity.User;
 import edu.ncsu.acm.studygroup.service.UserService;
 import edu.ncsu.acm.studygroup.entity.StudyGroup;
+import edu.ncsu.acm.studygroup.dto.StudyPreferenceDto;
+import edu.ncsu.acm.studygroup.entity.StudyPreference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -136,5 +138,60 @@ public class UserController {
         return ResponseEntity.ok(
                 userService.getStudyGroupsForUser(userId)
         );
+    }
+
+    @GetMapping("/{userId}/preferences")
+    public ResponseEntity<StudyPreferenceDto> getUserPreferences(
+            @PathVariable final Long userId) {
+
+        if (userService.getUserById(userId).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return userService.getPreferencesForUser(userId)
+                .map(preference ->
+                        ResponseEntity.ok(
+                                toPreferenceDto(preference)
+                        )
+                )
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+
+    @PutMapping("/{userId}/preferences")
+    public ResponseEntity<StudyPreferenceDto> saveUserPreferences(
+            @PathVariable final Long userId,
+            @RequestBody final StudyPreferenceDto preferenceDto) {
+
+        return userService
+                .savePreferencesForUser(
+                        userId,
+                        preferenceDto
+                )
+                .map(preference ->
+                        ResponseEntity.ok(
+                                toPreferenceDto(preference)
+                        )
+                )
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    private StudyPreferenceDto toPreferenceDto(
+            final StudyPreference preference) {
+
+        StudyPreferenceDto dto = new StudyPreferenceDto();
+
+        dto.setUserId(preference.getUser().getUserId());
+        dto.setAvailability(preference.getAvailability());
+        dto.setStudyStyle(preference.getStudyStyle());
+        dto.setPreferredGroupSize(
+                preference.getPreferredGroupSize()
+        );
+        dto.setStudyMode(preference.getStudyMode());
+        dto.setAdditionalNotes(
+                preference.getAdditionalNotes()
+        );
+
+        return dto;
     }
 }

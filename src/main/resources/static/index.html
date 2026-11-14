@@ -1,120 +1,749 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-        <title>Study Group Matching - Dashboard</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div class="menuToggle">
-            <input type="checkbox" id="toggle"/>
-            <div class="menuCircle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar bLast"></span>
-            </div>
-            <div class="menu">
-                <p class="webName"><strong>Study Group Finder</strong></p>
-                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <li onclick="window.location.href='profile.html'">
-                    <span>Profile</span>
-                </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+            rel="stylesheet">
 
-                <li onclick="window.location.href='index.html'">
-                    <span>Dashboard</span>
-                </li>
+    <title>Study Group Matching - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-                <li onclick="window.location.href='search.html'">
-                    <span>Find Groups</span>
-                </li>
+<body>
 
-                <li onclick="window.location.href='settings.html'">
-                    <span>Settings</span>
-                </li>
-            </div>
+<div class="menuToggle">
+    <input type="checkbox" id="toggle"/>
+
+    <div class="menuCircle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+    </div>
+
+    <div class="menu">
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+        <img
+                class="menuPFP"
+                src="imgs/profilePlaceholder.png"
+                alt="Profile picture"/>
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+    </div>
+</div>
+
+
+<div class="profileMain">
+
+    <!-- My Study Groups -->
+    <div class="nameHead profCard">
+        <h1 class="profileName">
+            My Study Groups
+        </h1>
+    </div>
+
+    <div class="groupHolder"
+         id="groupHolder">
+
+        <div class="dashCard">
+            <h2 class="cardHead">
+                Loading groups...
+            </h2>
         </div>
-        <div class="profileMain">
-            <div class="nameHead profCard">
-                <h1 class="profileName">My Study Groups</h1>
+
+    </div>
+
+
+    <!-- Pending Join Requests -->
+    <div class="nameHead profCard"
+         style="margin-top: 30px;">
+
+        <h1 class="profileName">
+            Pending Join Requests
+        </h1>
+
+    </div>
+
+    <div class="groupHolder"
+         id="requestHolder">
+
+        <div class="dashCard">
+            <h2 class="cardHead">
+                Loading requests...
+            </h2>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+  * Get the currently logged-in user.
+  */
+    const CURRENT_USER_ID =
+        Number(sessionStorage.getItem("currentUserId"));
+
+    /*
+     * Users must be logged in to access the dashboard.
+     */
+    if (!CURRENT_USER_ID) {
+        window.location.href = "login.html";
+    }
+
+
+    /*
+     * Stores the groups that the current user created.
+     *
+     * Join requests should only be manageable by
+     * the creator of the study group.
+     */
+    let createdGroups = [];
+
+
+    /*
+     * Load all study groups belonging to the current user.
+     */
+    async function loadStudyGroups() {
+
+        const groupHolder =
+            document.getElementById("groupHolder");
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${CURRENT_USER_ID}/study-groups`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Unable to load study groups. Status: ${response.status}`
+                );
+
+            }
+
+
+            const groups =
+                await response.json();
+
+            console.log("DASHBOARD GROUPS:", groups);
+
+            groupHolder.innerHTML = "";
+
+
+            if (groups.length === 0) {
+
+                groupHolder.innerHTML = `
+                    <div class="dashCard">
+
+                        <h2 class="cardHead">
+                            No Study Groups
+                        </h2>
+
+                        <p>
+                            You are not currently a member of any study groups.
+                        </p>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            groups.forEach(group => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "dashCard";
+
+
+                const groupName =
+                    group.name ||
+                    "Unnamed Study Group";
+
+
+                const description =
+                    group.description ||
+                    "No description available.";
+
+
+                const courseCode =
+                    group.course?.courseCode ||
+                    "No Course";
+
+
+                card.innerHTML = `
+                    <div class="groupHead">
+
+                        <h2 class="cardHead gTitle">
+                            ${escapeHtml(groupName)}
+                        </h2>
+
+                        <p class="csc course">
+                            ${escapeHtml(courseCode)}
+                        </p>
+
+                    </div>
+
+                    <p>
+                        ${escapeHtml(description)}
+                    </p>
+
+                    <div class="centerer">
+
+                        <button
+                            class="groupButton"
+                            onclick="openGroup(${group.groupId})">
+                            Go to Group
+                        </button>
+
+                    </div>
+                `;
+
+
+                groupHolder.appendChild(card);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading study groups:",
+                error
+            );
+
+
+            groupHolder.innerHTML = `
+                <div class="dashCard">
+
+                    <h2 class="cardHead">
+                        Unable to Load Groups
+                    </h2>
+
+                    <p>
+                        There was a problem loading your study groups.
+                    </p>
+
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /*
+     * Load all study groups and determine which groups
+     * were created by the current user.
+     */
+    async function loadCreatedGroups() {
+
+        try {
+
+            const response =
+                await fetch("/api/study-groups");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load study groups."
+                );
+
+            }
+
+
+            const groups =
+                await response.json();
+
+
+            createdGroups =
+                groups.filter(group =>
+                    group.createdBy?.userId === CURRENT_USER_ID
+                );
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading created groups:",
+                error
+            );
+
+            createdGroups = [];
+
+        }
+
+    }
+
+
+    /*
+     * Load pending join requests for groups created
+     * by the current user.
+     */
+    async function loadJoinRequests() {
+
+        const requestHolder =
+            document.getElementById("requestHolder");
+
+
+        try {
+
+            /*
+             * We need the user's created groups first
+             * so that ordinary members cannot manage requests.
+             */
+            await loadCreatedGroups();
+
+
+            const createdGroupIds =
+                new Set(
+                    createdGroups.map(
+                        group => group.groupId
+                    )
+                );
+
+
+            const response =
+                await fetch("/api/join-requests");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load join requests."
+                );
+
+            }
+
+
+            const requests =
+                await response.json();
+
+
+            /*
+             * Only show:
+             *
+             * 1. PENDING requests
+             * 2. Requests belonging to groups created
+             *    by the current user
+             */
+            const pendingRequests =
+                requests.filter(request =>
+
+                    request.status === "PENDING" &&
+
+                    createdGroupIds.has(
+                        request.studyGroupId
+                    )
+
+                );
+
+
+            requestHolder.innerHTML = "";
+
+
+            if (pendingRequests.length === 0) {
+
+                requestHolder.innerHTML = `
+                    <div class="dashCard">
+
+                        <h2 class="cardHead">
+                            No Pending Requests
+                        </h2>
+
+                        <p>
+                            None of your study groups currently
+                            have pending join requests.
+                        </p>
+
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            /*
+             * Load each request card.
+             */
+            for (const request of pendingRequests) {
+
+                await displayJoinRequest(request);
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading join requests:",
+                error
+            );
+
+
+            requestHolder.innerHTML = `
+                <div class="dashCard">
+
+                    <h2 class="cardHead">
+                        Unable to Load Requests
+                    </h2>
+
+                    <p>
+                        There was a problem loading join requests.
+                    </p>
+
+                </div>
+            `;
+
+        }
+
+    }
+
+
+    /*
+     * Display one join request.
+     */
+    async function displayJoinRequest(request) {
+
+        const requestHolder =
+            document.getElementById("requestHolder");
+
+
+        let userName =
+            `User ${request.userId}`;
+
+
+        /*
+         * Load the requesting user's name.
+         */
+        try {
+
+            const userResponse =
+                await fetch(
+                    `/api/users/${request.userId}`
+                );
+
+
+            if (userResponse.ok) {
+
+                const user =
+                    await userResponse.json();
+
+                userName =
+                    user.name ||
+                    userName;
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "Unable to load requesting user:",
+                error
+            );
+
+        }
+
+
+        /*
+         * Find the group belonging to this request.
+         */
+        const group =
+            createdGroups.find(
+                currentGroup =>
+                    currentGroup.groupId ===
+                    request.studyGroupId
+            );
+
+
+        const groupName =
+            group?.name ||
+            `Study Group ${request.studyGroupId}`;
+
+
+        const courseCode =
+            group?.course?.courseCode ||
+            "No Course";
+
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "dashCard";
+
+
+        card.id =
+            `request-${request.requestId}`;
+
+
+        card.innerHTML = `
+
+            <div class="groupHead">
+
+                <h2 class="cardHead gTitle">
+                    ${escapeHtml(userName)}
+                </h2>
+
+                <p class="csc course">
+                    ${escapeHtml(courseCode)}
+                </p>
+
             </div>
 
-            <div class="groupHolder">
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
-                <div class="dashCard">
-                    <div class="groupHead">
-                        <h2 class="cardHead gTitle">Name of Study Group</h2>
-                        <p class="csc course">CSC 116</p>
-                    </div>
-                    <p>Description for study group?</p>
-                    <div class="centerer">
-                        <button class="groupButton">Go to Group</button>
-                    </div>
-                </div>
+
+            <p>
+                Wants to join
+                <strong>${escapeHtml(groupName)}</strong>
+            </p>
+
+
+            ${
+            request.message
+                ? `
+                        <p>
+                            <strong>Message:</strong>
+                            ${escapeHtml(request.message)}
+                        </p>
+                      `
+                : ""
+        }
+
+
+            <p id="requestStatus-${request.requestId}"></p>
+
+
+            <div class="centerer">
+
+                <button
+                    class="groupButton"
+                    id="accept-${request.requestId}"
+                    onclick="respondToRequest(
+                        ${request.requestId},
+                        'accept'
+                    )">
+                    Accept
+                </button>
+
+
+                <button
+                    class="groupButton"
+                    id="reject-${request.requestId}"
+                    onclick="respondToRequest(
+                        ${request.requestId},
+                        'reject'
+                    )">
+                    Reject
+                </button>
+
             </div>
-        </div>
-    </body>
+        `;
+
+
+        requestHolder.appendChild(card);
+
+    }
+
+
+    /*
+     * Accept or reject a join request.
+     */
+    async function respondToRequest(
+        requestId,
+        action
+    ) {
+
+        const acceptButton =
+            document.getElementById(
+                `accept-${requestId}`
+            );
+
+
+        const rejectButton =
+            document.getElementById(
+                `reject-${requestId}`
+            );
+
+
+        const status =
+            document.getElementById(
+                `requestStatus-${requestId}`
+            );
+
+
+        /*
+         * Prevent multiple requests while the backend
+         * is processing the action.
+         */
+        acceptButton.disabled = true;
+        rejectButton.disabled = true;
+
+
+        status.textContent =
+            action === "accept"
+                ? "Accepting request..."
+                : "Rejecting request...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/join-requests/${requestId}/${action}`,
+                    {
+                        method: "PUT"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Unable to ${action} join request.`
+                );
+
+            }
+
+
+            const updatedRequest =
+                await response.json();
+
+
+            status.textContent =
+                `Request ${updatedRequest.status}.`;
+
+
+            /*
+             * Give the user a moment to see the result,
+             * then refresh the dashboard information.
+             */
+            setTimeout(
+                async () => {
+
+                    await loadStudyGroups();
+                    await loadJoinRequests();
+
+                },
+                500
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                `Error attempting to ${action} request:`,
+                error
+            );
+
+
+            status.textContent =
+                error.message;
+
+
+            /*
+             * Re-enable the buttons if the request failed.
+             */
+            acceptButton.disabled = false;
+            rejectButton.disabled = false;
+
+        }
+
+    }
+
+
+    /*
+     * Open a study group.
+     */
+    function openGroup(groupId) {
+
+        window.location.href =
+            `group.html?groupId=${
+                encodeURIComponent(groupId)
+            }`;
+
+    }
+
+    /*
+ * Log out the current user and return to the login page.
+ */
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    }
+
+
+    /*
+     * Escape backend text before inserting it into HTML.
+     */
+    function escapeHtml(value) {
+
+        const element =
+            document.createElement("div");
+
+        element.textContent =
+            String(value ?? "");
+
+        return element.innerHTML;
+
+    }
+
+
+    /*
+     * Load the dashboard.
+     */
+    document.addEventListener(
+        "DOMContentLoaded",
+        async () => {
+
+            await Promise.all([
+                loadStudyGroups(),
+                loadJoinRequests()
+            ]);
+
+        }
+    );
+
+</script>
+
+</body>
 </html>

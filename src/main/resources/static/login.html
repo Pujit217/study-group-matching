@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+
+    <title>Study Group Finder - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .authPage {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2em;
+            box-sizing: border-box;
+        }
+
+        .authCard {
+            width: min(420px, 90vw);
+            background-color: var(--bg-light);
+            border: 8px solid var(--bg-dark);
+            border-radius: 2em;
+            padding: 3em;
+            box-sizing: border-box;
+        }
+
+        .authTitle {
+            text-align: center;
+            margin-bottom: 0.4em;
+        }
+
+        .authSubtitle {
+            text-align: center;
+            color: var(--muted-text);
+            margin-bottom: 2em;
+        }
+
+        .authLabel {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+
+        .authInput {
+            width: 100%;
+            box-sizing: border-box;
+            border: 4px solid var(--primary);
+            border-radius: 1em;
+            padding: 0.8em;
+            margin-bottom: 1.5em;
+            background-color: white;
+            font-size: 1em;
+        }
+
+        .authButton {
+            width: 100%;
+            border: none;
+            border-radius: 1em;
+            padding: 0.9em;
+            background-color: var(--accent);
+            color: var(--accent-text);
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .authButton:hover {
+            background-color: var(--accent-dark);
+        }
+
+        .authButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .authMessage {
+            text-align: center;
+            margin-top: 1em;
+            min-height: 1.2em;
+            font-weight: bold;
+        }
+
+        .authSwitch {
+            text-align: center;
+            margin-top: 1.5em;
+        }
+
+        .authSwitch a {
+            color: var(--accent);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="authPage">
+    <div class="authCard">
+
+        <h1 class="authTitle">Study Group Finder</h1>
+        <p class="authSubtitle">Log in to your account</p>
+
+        <form id="loginForm">
+
+            <label class="authLabel" for="email">
+                Email
+            </label>
+
+            <input
+                    class="authInput"
+                    type="email"
+                    id="email"
+                    placeholder="student@ncsu.edu"
+                    required>
+
+            <label class="authLabel" for="password">
+                Password
+            </label>
+
+            <input
+                    class="authInput"
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    required>
+
+            <button
+                    class="authButton"
+                    id="loginButton"
+                    type="submit">
+                Log In
+            </button>
+
+        </form>
+
+        <p class="authMessage" id="authMessage"></p>
+
+        <p class="authSwitch">
+            Don't have an account?
+            <a href="signup.html">Sign Up</a>
+        </p>
+
+    </div>
+</div>
+
+<script>
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const authMessage = document.getElementById("authMessage");
+
+    loginForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Logging In...";
+        authMessage.textContent = "";
+
+        try {
+            const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            if (!response.ok) {
+                let message = "Invalid email or password.";
+
+                try {
+                    const body = await response.text();
+
+                    if (body) {
+                        message = body;
+                    }
+                } catch (ignored) {
+                }
+
+                throw new Error(message);
+            }
+
+            const user = await response.json();
+
+            sessionStorage.setItem(
+                "currentUserId",
+                user.userId
+            );
+
+            sessionStorage.setItem(
+                "currentUserName",
+                user.name
+            );
+
+            sessionStorage.setItem(
+                "currentUserEmail",
+                user.email
+            );
+
+            window.location.href = "index.html";
+
+        } catch (error) {
+            authMessage.textContent = error.message;
+
+            loginButton.disabled = false;
+            loginButton.textContent = "Log In";
+        }
+    });
+</script>
+
+</body>
+</html>

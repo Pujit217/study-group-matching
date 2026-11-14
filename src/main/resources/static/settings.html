@@ -1,89 +1,541 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-        <title>Study Group Matching - Profile</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div class="menuToggle">
-            <input type="checkbox" id="toggle"/>
-            <div class="menuCircle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar bLast"></span>
-            </div>
-            <div class="menu">
-                <p class="webName"><strong>Study Group Finder</strong></p>
-                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <li onclick="window.location.href='profile.html'">
-                    <span>Profile</span>
-                </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet">
 
-                <li onclick="window.location.href='index.html'">
-                    <span>Dashboard</span>
-                </li>
+    <title>Study Group Matching - Settings</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-                <li onclick="window.location.href='search.html'">
-                    <span>Find Groups</span>
-                </li>
+<body>
 
-                <li onclick="window.location.href='settings.html'">
-                    <span>Settings</span>
-                </li>
-            </div>
+<div class="menuToggle">
+    <input type="checkbox" id="toggle"/>
+
+    <div class="menuCircle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+    </div>
+
+    <div class="menu">
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+        <img class="menuPFP"
+             src="imgs/profilePlaceholder.png"
+             alt="Profile"/>
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+    </div>
+</div>
+
+
+<div class="profileMain">
+
+    <div class="profCard centerer">
+        <h1 class="profileName">
+            Settings
+        </h1>
+    </div>
+
+    <form class="profCard" id="preferencesForm">
+
+        <h2 class="cardHead">
+            Preferences
+        </h2>
+
+        <h3 class="cardHead">
+            Enter your availability:
+        </h3>
+
+        <input
+                type="text"
+                class="searchInput"
+                id="availability"
+                placeholder="Example: Monday and Wednesday 6-8 PM"
+        />
+
+
+        <h3 class="cardHead">
+            Pick your preferred study method:
+        </h3>
+
+        <div class="radioGroup">
+
+            <label class="radio">
+                <input
+                        class="radio__input"
+                        type="radio"
+                        name="studyMethod"
+                        id="practiceProblems"
+                        value="Practice Problems"
+                />
+                <span class="radio__label">
+                    Practice Problems
+                </span>
+            </label>
+
+            <label class="radio">
+                <input
+                        class="radio__input"
+                        type="radio"
+                        name="studyMethod"
+                        id="discussion"
+                        value="Discussion"
+                />
+                <span class="radio__label">
+                    Discussion
+                </span>
+            </label>
+
+            <label class="radio">
+                <input
+                        class="radio__input"
+                        type="radio"
+                        name="studyMethod"
+                        id="flashcards"
+                        value="Flashcards"
+                />
+                <span class="radio__label">
+                    Flashcards
+                </span>
+            </label>
+
         </div>
-        <div class="profileMain">
-            <div class="profCard centerer">
-                <h1 class="profileName">Settings</h1>
-            </div>
-            <form class="profCard">
-                <h2 class="cardHead">Preferences</h2>
-                <h3 class="cardHead">Enter your availability:</h3>
-                <input type="text" val="" class="searchInput" id="availability"/>
-                <h3 class="cardHead">Pick your preferred study method:</h3>
-                <div class="radioGroup">
-                    <label class="radio">
-                        <input class="radio__input" type="radio" name="studyMethod" id="practiceProblems" />
-                        <span class="radio__label">Practice Problems</span>
-                    </label>
-                    <label class="radio">
-                        <input class="radio__input" type="radio" name="studyMethod" id="discussion" />
-                        <span class="radio__label">Discussion</span>
-                    </label>
-                    <label class="radio">
-                        <input class="radio__input" type="radio" name="studyMethod" id="flashcards" />
-                        <span class="radio__label">Flashcards</span>
-                    </label>
-                </div>
-                <h3 class="cardHead">Enter your preferred number of group members:</h3>
-                <input type="number" val="4" class="searchInput" id="numMembers"/>
-                <h3 class="cardHead">Pick your preferred study mode:</h3>
-                <div class="radioGroup">
-                    <label class="radio">
-                        <input class="radio__input" type="radio" name="studyMode" id="inPerson" />
-                        <span class="radio__label">In Person</span>
-                    </label>
-                    <label class="radio">
-                        <input class="radio__input" type="radio" name="studyMode" id="online" />
-                        <span class="radio__label">Online</span>
-                    </label>
-                    <label class="radio">
-                        <input class="radio__input" type="radio" name="studyMode" id="either" />
-                        <span class="radio__label">Either</span>
-                    </label>
-                </div>
-                <h3 class="cardHead">Enter any additional preference notes:</h3>
-                <input type="text" val="" class="searchInput" id="notes"/>
-                <div class="centerer">
-                    <button class="groupButton" style="margin-top: 0;">Save Preferences</button>
-                </div>
-            </form>
+
+
+        <h3 class="cardHead">
+            Enter your preferred number of group members:
+        </h3>
+
+        <input
+                type="number"
+                class="searchInput"
+                id="numMembers"
+                min="1"
+                placeholder="4"
+        />
+
+
+        <h3 class="cardHead">
+            Pick your preferred study mode:
+        </h3>
+
+        <div class="radioGroup">
+
+            <label class="radio">
+                <input
+                        class="radio__input"
+                        type="radio"
+                        name="studyMode"
+                        id="inPerson"
+                        value="In Person"
+                />
+                <span class="radio__label">
+                    In Person
+                </span>
+            </label>
+
+            <label class="radio">
+                <input
+                        class="radio__input"
+                        type="radio"
+                        name="studyMode"
+                        id="online"
+                        value="Online"
+                />
+                <span class="radio__label">
+                    Online
+                </span>
+            </label>
+
+            <label class="radio">
+                <input
+                        class="radio__input"
+                        type="radio"
+                        name="studyMode"
+                        id="either"
+                        value="Both"
+                />
+                <span class="radio__label">
+                    Either
+                </span>
+            </label>
+
         </div>
-    </body>
+
+
+        <h3 class="cardHead">
+            Enter any additional preference notes:
+        </h3>
+
+        <input
+                type="text"
+                class="searchInput"
+                id="notes"
+                placeholder="Optional notes"
+        />
+
+
+        <div class="centerer">
+
+            <button
+                    type="submit"
+                    class="groupButton"
+                    style="margin-top: 0;">
+                Save Preferences
+            </button>
+
+        </div>
+
+        <p id="saveMessage"
+           style="text-align: center; font-weight: bold;">
+        </p>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    /*
+     * Get the currently logged-in user.
+     */
+    const CURRENT_USER_ID =
+        Number(sessionStorage.getItem("currentUserId"));
+
+
+    /*
+     * Protect the page from users who are not logged in.
+     */
+    if (!CURRENT_USER_ID) {
+        window.location.href = "login.html";
+    }
+
+
+    /*
+     * Load the user's saved preferences when the page opens.
+     */
+    async function loadPreferences() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${CURRENT_USER_ID}/preferences`
+                );
+
+
+            /*
+             * A 404 simply means the user has not created
+             * preferences yet.
+             */
+            if (response.status === 404) {
+                return;
+            }
+
+
+            if (!response.ok) {
+                throw new Error(
+                    "Preferences could not be loaded."
+                );
+            }
+
+
+            const preferences =
+                await response.json();
+
+
+            /*
+             * Availability
+             */
+            document.getElementById("availability").value =
+                preferences.availability || "";
+
+
+            /*
+             * Preferred group size
+             */
+            document.getElementById("numMembers").value =
+                preferences.preferredGroupSize || "";
+
+
+            /*
+             * Additional notes
+             */
+            document.getElementById("notes").value =
+                preferences.additionalNotes || "";
+
+
+            /*
+             * Study style
+             */
+            if (preferences.studyStyle) {
+
+                const studyMethod =
+                    document.querySelector(
+                        `input[name="studyMethod"][value="${preferences.studyStyle}"]`
+                    );
+
+                if (studyMethod) {
+                    studyMethod.checked = true;
+                }
+
+            }
+
+
+            /*
+             * Study mode
+             */
+            if (preferences.studyMode) {
+
+                const studyMode =
+                    document.querySelector(
+                        `input[name="studyMode"][value="${preferences.studyMode}"]`
+                    );
+
+                if (studyMode) {
+                    studyMode.checked = true;
+                }
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error loading preferences:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Save preferences.
+     */
+    document
+        .getElementById("preferencesForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const saveMessage =
+                    document.getElementById("saveMessage");
+
+
+                const availability =
+                    document
+                        .getElementById("availability")
+                        .value
+                        .trim();
+
+
+                const preferredGroupSize =
+                    Number(
+                        document
+                            .getElementById("numMembers")
+                            .value
+                    );
+
+
+                const additionalNotes =
+                    document
+                        .getElementById("notes")
+                        .value
+                        .trim();
+
+
+                const studyMethod =
+                    document.querySelector(
+                        'input[name="studyMethod"]:checked'
+                    );
+
+
+                const studyMode =
+                    document.querySelector(
+                        'input[name="studyMode"]:checked'
+                    );
+
+
+                /*
+                 * Basic frontend validation.
+                 */
+                if (!studyMethod) {
+
+                    saveMessage.textContent =
+                        "Please select a study method.";
+
+                    return;
+
+                }
+
+
+                if (!studyMode) {
+
+                    saveMessage.textContent =
+                        "Please select a study mode.";
+
+                    return;
+
+                }
+
+
+                if (!preferredGroupSize ||
+                    preferredGroupSize < 1) {
+
+                    saveMessage.textContent =
+                        "Please enter a valid group size.";
+
+                    return;
+
+                }
+
+
+                /*
+                 * This exactly matches StudyPreferenceDto.
+                 */
+                const preferenceData = {
+
+                    userId: CURRENT_USER_ID,
+
+                    availability:
+                    availability,
+
+                    studyStyle:
+                    studyMethod.value,
+
+                    preferredGroupSize:
+                    preferredGroupSize,
+
+                    studyMode:
+                    studyMode.value,
+
+                    additionalNotes:
+                    additionalNotes
+
+                };
+
+
+                try {
+
+                    saveMessage.textContent =
+                        "Saving...";
+
+
+                    const response =
+                        await fetch(
+                            `/api/users/${CURRENT_USER_ID}/preferences`,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        preferenceData
+                                    )
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Preferences could not be saved."
+                        );
+
+                    }
+
+
+                    const savedPreferences =
+                        await response.json();
+
+
+                    console.log(
+                        "Saved preferences:",
+                        savedPreferences
+                    );
+
+
+                    saveMessage.textContent =
+                        "Preferences saved successfully!";
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Error saving preferences:",
+                        error
+                    );
+
+
+                    saveMessage.textContent =
+                        "Unable to save preferences.";
+
+                }
+
+            }
+        );
+
+
+    /*
+     * Log the current user out.
+     */
+    function logout() {
+
+        sessionStorage.clear();
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+    /*
+     * Load existing preferences after the page loads.
+     */
+    loadPreferences();
+
+</script>
+
+</body>
 </html>

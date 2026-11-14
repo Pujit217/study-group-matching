@@ -1,72 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-        <title>Study Group Matching - Profile</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div class="menuToggle">
-            <input type="checkbox" id="toggle"/>
-            <div class="menuCircle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar bLast"></span>
-            </div>
-            <div class="menu">
-                <p class="webName"><strong>Study Group Finder</strong></p>
-                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <li onclick="window.location.href='profile.html'">
-                    <span>Profile</span>
-                </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+            rel="stylesheet">
 
-                <li onclick="window.location.href='index.html'">
-                    <span>Dashboard</span>
-                </li>
+    <title>Study Group Matching - Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-                <li onclick="window.location.href='search.html'">
-                    <span>Find Groups</span>
-                </li>
+<body>
 
-                <li onclick="window.location.href='settings.html'">
-                    <span>Settings</span>
-                </li>
-            </div>
+<div class="menuToggle">
+    <input type="checkbox" id="toggle"/>
+
+    <div class="menuCircle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+    </div>
+
+    <div class="menu">
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+        <img
+                class="menuPFP"
+                src="imgs/profilePlaceholder.png"
+                alt="Profile">
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+    </div>
+</div>
+
+
+<div class="profileMain">
+
+    <!-- Profile Header -->
+    <div class="nameHead profCard">
+
+        <img
+                src="imgs/profilePlaceholder.png"
+                class="profilePFP"
+                id="profilePicture"
+                alt="Profile">
+
+        <h1
+                class="profileName"
+                id="profileName">
+            Loading...
+        </h1>
+
+    </div>
+
+
+    <!-- Details -->
+    <div class="profCard">
+
+        <h2 class="cardHead">
+            Details
+        </h2>
+
+        <p id="profileBio">
+            Loading profile...
+        </p>
+
+        <div class="prefHolder">
+
+            <p
+                    class="node"
+                    id="profileMajor">
+                Major not specified
+            </p>
+
+            <p
+                    class="node"
+                    id="profileYear">
+                Year not specified
+            </p>
+
         </div>
-        <div class="profileMain">
-            <div class="nameHead profCard">
-                <img src="imgs/profilePlaceholder.png" class="profilePFP"/>
-                <h1 class="profileName">Test Name</h1>
-            </div>
-
-            <div class="profCard">
-                <h2 class="cardHead">Details</h2>
-                <p>This user hasn't added a bio to their profile yet!</p>
-            </div>
-
-            <div class="profCard coursesTitle">
-                <h2>Current Courses</h2>
-                <div class="courseGrid">
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                    <p class="csc course">CSC 116</p>
-                </div>
-            </div>
-
-            <div class="profCard">
-                <h2 class="cardHead">Preferences</h2>
-                <p>This user hasn't added their preferences yet!</p>
-            </div>
+        <div class="centerer" style="margin-top: 20px;">
+            <button
+                    type="button"
+                    class="groupButton"
+                    onclick="showEditProfile()">
+                Edit Profile
+            </button>
         </div>
-    </body>
+    </div>
+
+    <!-- Edit Profile -->
+    <div
+            class="profCard"
+            id="editProfileCard"
+            style="display: none;">
+
+        <h2 class="cardHead">
+            Edit Profile
+        </h2>
+
+        <h3 class="cardHead">Name:</h3>
+        <input
+                type="text"
+                class="searchInput"
+                id="editName">
+
+        <h3 class="cardHead">Major:</h3>
+        <input
+                type="text"
+                class="searchInput"
+                id="editMajor"
+                placeholder="Computer Science">
+
+        <h3 class="cardHead">Year:</h3>
+        <select
+                class="searchInput profileSelect"
+                id="editYear">
+            <option value="">Select year</option>
+            <option value="Freshman">Freshman</option>
+            <option value="Sophomore">Sophomore</option>
+            <option value="Junior">Junior</option>
+            <option value="Senior">Senior</option>
+            <option value="Graduate">Graduate</option>
+        </select>
+
+        <h3 class="cardHead">Bio:</h3>
+        <textarea
+                class="searchInput"
+                id="editBio"
+                rows="4"
+                placeholder="Tell other students a little about yourself."></textarea>
+
+        <div class="centerer" style="margin-top: 20px;">
+            <button
+                    type="button"
+                    class="groupButton"
+                    onclick="saveProfile()">
+                Save Profile
+            </button>
+        </div>
+
+        <p
+                id="profileSaveMessage"
+                style="text-align: center;">
+        </p>
+
+    </div>
+
+    <!-- Current Courses -->
+    <div class="profCard coursesTitle">
+
+        <h2>
+            Current Courses
+        </h2>
+
+        <div
+                class="courseGrid"
+                id="courseGrid">
+
+            <p>
+                No courses added yet.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Preferences -->
+    <div class="profCard">
+
+        <h2 class="cardHead">
+            Preferences
+        </h2>
+
+        <div
+                class="prefHolder"
+                id="preferencesHolder">
+
+            <p>
+                Loading preferences...
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let currentUser = null;
+
+    /*
+     * Get the currently logged-in user.
+     */
+    const CURRENT_USER_ID =
+        Number(sessionStorage.getItem("currentUserId"));
+
+
+    /*
+     * Protect this page from users who are not logged in.
+     */
+    if (!CURRENT_USER_ID) {
+        window.location.href = "login.html";
+    }
+
+
+    /*
+     * Load profile information when the page opens.
+     */
+    loadProfile();
+    loadPreferences();
+    loadCourses();
+
+
+    /*
+     * Loads the logged-in user's basic profile information.
+     */
+    async function loadProfile() {
+
+        try {
+
+            const response =
+                await fetch(`/api/users/${CURRENT_USER_ID}`);
+
+            if (!response.ok) {
+                throw new Error("Unable to load user.");
+            }
+
+            const user =
+                await response.json();
+
+            currentUser = user;
+
+
+            /*
+             * Name
+             */
+            document.getElementById("profileName").textContent =
+                user.name || "Unnamed User";
+
+
+            /*
+             * Bio
+             */
+            document.getElementById("profileBio").textContent =
+                user.bio ||
+                "This user hasn't added a bio to their profile yet!";
+
+
+            /*
+             * Major
+             */
+            document.getElementById("profileMajor").textContent =
+                user.major
+                    ? "Major: " + user.major
+                    : "Major not specified";
+
+
+            /*
+             * Year
+             */
+            document.getElementById("profileYear").textContent =
+                user.year
+                    ? "Year: " + user.year
+                    : "Year not specified";
+
+
+            /*
+             * Profile picture.
+             *
+             * If no custom picture exists, keep the placeholder.
+             */
+            if (user.profilePicture) {
+
+                document.getElementById("profilePicture").src =
+                    user.profilePicture;
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error loading profile:",
+                error
+            );
+
+            document.getElementById("profileName").textContent =
+                "Unable to Load Profile";
+
+            document.getElementById("profileBio").textContent =
+                "There was a problem loading your profile.";
+
+        }
+
+    }
+
+
+    /*
+     * Loads the user's study preferences.
+     */
+    async function loadPreferences() {
+
+        const holder =
+            document.getElementById("preferencesHolder");
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${CURRENT_USER_ID}/preferences`
+                );
+
+
+            /*
+             * The user may not have created preferences yet.
+             */
+            if (response.status === 404) {
+
+                holder.innerHTML =
+                    "<p>You haven't added your study preferences yet.</p>";
+
+                return;
+            }
+
+
+            if (!response.ok) {
+                throw new Error("Unable to load preferences.");
+            }
+
+
+            const preferences =
+                await response.json();
+
+
+            holder.innerHTML = "";
+
+
+            addPreference(
+                holder,
+                "Availability",
+                preferences.availability
+            );
+
+            addPreference(
+                holder,
+                "Study Style",
+                preferences.studyStyle
+            );
+
+            addPreference(
+                holder,
+                "Preferred Group Size",
+                preferences.preferredGroupSize
+            );
+
+            addPreference(
+                holder,
+                "Study Mode",
+                preferences.studyMode
+            );
+
+            addPreference(
+                holder,
+                "Additional Notes",
+                preferences.additionalNotes
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Error loading preferences:",
+                error
+            );
+
+            holder.innerHTML =
+                "<p>Unable to load preferences.</p>";
+
+        }
+
+    }
+
+
+    /*
+     * Adds one preference to the profile.
+     */
+    function addPreference(holder, label, value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+            return;
+        }
+
+
+        const preference =
+            document.createElement("p");
+
+        preference.className =
+            "node";
+
+        preference.textContent =
+            label + ": " + value;
+
+        holder.appendChild(preference);
+
+    }
+
+    async function loadCourses() {
+
+        const courseGrid =
+            document.getElementById("courseGrid");
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${CURRENT_USER_ID}/study-groups`
+                );
+
+            if (!response.ok) {
+                throw new Error("Unable to load courses.");
+            }
+
+            const groups =
+                await response.json();
+
+
+            /*
+             * Get unique courses from the user's study groups.
+             */
+            const uniqueCourses = new Map();
+
+            groups.forEach(group => {
+
+                if (group.course) {
+
+                    const courseCode =
+                        group.course.courseCode;
+
+                    if (!uniqueCourses.has(courseCode)) {
+
+                        uniqueCourses.set(
+                            courseCode,
+                            {
+                                courseCode:
+                                group.course.courseCode,
+
+                                courseName:
+                                group.course.courseName,
+
+                                section:
+                                    group.section
+                                        ? group.section.sectionNumber
+                                        : null
+                            }
+                        );
+
+                    }
+
+                }
+
+            });
+
+
+            courseGrid.innerHTML = "";
+
+
+            if (uniqueCourses.size === 0) {
+
+                courseGrid.innerHTML =
+                    "<p>No courses added yet.</p>";
+
+                return;
+
+            }
+
+
+            uniqueCourses.forEach(course => {
+
+                const courseCard =
+                    document.createElement("div");
+
+                courseCard.className =
+                    "node";
+
+
+                let text =
+                    course.courseCode;
+
+                if (course.section) {
+                    text +=
+                        " - Section " +
+                        course.section;
+                }
+
+
+                courseCard.textContent =
+                    text;
+
+                courseGrid.appendChild(
+                    courseCard
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Error loading courses:",
+                error
+            );
+
+            courseGrid.innerHTML =
+                "<p>Unable to load courses.</p>";
+
+        }
+
+    }
+
+    function showEditProfile() {
+
+        if (!currentUser) {
+            return;
+        }
+
+        document.getElementById("editName").value =
+            currentUser.name || "";
+
+        document.getElementById("editMajor").value =
+            currentUser.major || "";
+
+        document.getElementById("editYear").value =
+            currentUser.year || "";
+
+        document.getElementById("editBio").value =
+            currentUser.bio || "";
+
+        document.getElementById("profileSaveMessage").textContent =
+            "";
+
+        const editCard =
+            document.getElementById("editProfileCard");
+
+        editCard.style.display = "block";
+
+        editCard.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    async function saveProfile() {
+
+        const name =
+            document.getElementById("editName").value.trim();
+
+        const major =
+            document.getElementById("editMajor").value.trim();
+
+        const year =
+            document.getElementById("editYear").value;
+
+        const bio =
+            document.getElementById("editBio").value.trim();
+
+        const message =
+            document.getElementById("profileSaveMessage");
+
+
+        if (!name) {
+            message.textContent =
+                "Name cannot be empty.";
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/users/${CURRENT_USER_ID}`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name: name,
+                            major: major || null,
+                            year: year || null,
+                            bio: bio || null,
+                            profilePicture:
+                                currentUser
+                                    ? currentUser.profilePicture
+                                    : null
+                        })
+                    }
+                );
+
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to save profile."
+                );
+            }
+
+
+            const updatedUser =
+                await response.json();
+
+            currentUser = updatedUser;
+
+
+            message.textContent =
+                "Profile saved successfully!";
+
+
+            /*
+             * Refresh the displayed profile.
+             */
+            await loadProfile();
+
+
+            /*
+             * Hide the editor shortly after saving.
+             */
+            setTimeout(() => {
+
+                document.getElementById(
+                    "editProfileCard"
+                ).style.display = "none";
+
+            }, 800);
+
+
+        } catch (error) {
+
+            console.error(
+                "Error saving profile:",
+                error
+            );
+
+            message.textContent =
+                "Unable to save profile.";
+
+        }
+
+    }
+
+    /*
+     * Logs the current user out.
+     */
+    function logout() {
+
+        sessionStorage.clear();
+
+        window.location.href =
+            "login.html";
+
+    }
+
+</script>
+
+</body>
 </html>

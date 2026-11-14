@@ -1,56 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-        <title>Study Group Matching - Profile</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <div class="menuToggle">
-            <input type="checkbox" id="toggle"/>
-            <div class="menuCircle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar bLast"></span>
-            </div>
-            <div class="menu">
-                <p class="webName"><strong>Study Group Finder</strong></p>
-                <img class="menuPFP" src="imgs/profilePlaceholder.png"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <li onclick="window.location.href='profile.html'">
-                    <span>Profile</span>
-                </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+          rel="stylesheet">
 
-                <li onclick="window.location.href='index.html'">
-                    <span>Dashboard</span>
-                </li>
+    <title>Study Group Matching - Find Groups</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-                <li onclick="window.location.href='search.html'">
-                    <span>Find Groups</span>
-                </li>
+<body>
 
-                <li onclick="window.location.href='settings.html'">
-                    <span>Settings</span>
-                </li>
-            </div>
+<div class="menuToggle">
+    <input type="checkbox" id="toggle"/>
+
+    <div class="menuCircle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar bLast"></span>
+    </div>
+
+    <div class="menu">
+        <p class="webName">
+            <strong>Study Group Finder</strong>
+        </p>
+
+        <img class="menuPFP"
+             src="imgs/profilePlaceholder.png"
+             alt="Profile"/>
+
+        <li onclick="window.location.href='profile.html'">
+            <span>Profile</span>
+        </li>
+
+        <li onclick="window.location.href='index.html'">
+            <span>Dashboard</span>
+        </li>
+
+        <li onclick="window.location.href='search.html'">
+            <span>Find Groups</span>
+        </li>
+
+        <li onclick="window.location.href='create-group.html'">
+            <span>Create Group</span>
+        </li>
+
+        <li onclick="window.location.href='settings.html'">
+            <span>Settings</span>
+        </li>
+
+        <li onclick="logout()">
+            <span>Logout</span>
+        </li>
+    </div>
+</div>
+
+
+<div class="profileMain">
+
+    <div class="profCard centerer">
+        <h1 class="profileName">
+            Find Groups
+        </h1>
+    </div>
+
+    <form class="profCard" id="searchForm">
+
+        <h3 class="cardHead">
+            Enter a class code (e.g. CSC326):
+        </h3>
+
+        <input
+                type="text"
+                id="classCode"
+                class="searchInput"
+                placeholder="CSC326"
+                required
+        />
+
+        <h3 class="cardHead">
+            Enter a section (optional):
+        </h3>
+
+        <input
+                type="text"
+                id="section"
+                class="searchInput"
+                placeholder="001"
+        />
+
+        <div class="centerer">
+
+            <button
+                    type="submit"
+                    class="groupButton"
+                    style="margin-top: 0;">
+                Search
+            </button>
+
         </div>
-        <div class="profileMain">
-            <div class="profCard centerer">
-                <h1 class="profileName">Find Groups</h1>
-            </div>
-            <form class="profCard">
-                <h3 class="cardHead">Enter a class code (e.g. CSC 116):</h3>
-                <input type="text" id="classCode" value="" class="searchInput"/>
-                <h3 class="cardHead">Enter a section (optional):</h3>
-                <input type="number" id="section" value="" class="searchInput"/>
-                <div class="centerer">
-                    <button class="groupButton" style="margin-top: 0;">Search</button>
-                </div>
-            </form>
-        </div>
-    </body>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    const CURRENT_USER_ID =
+        Number(sessionStorage.getItem("currentUserId"));
+
+    if (!CURRENT_USER_ID) {
+        window.location.href = "login.html";
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    }
+
+    const searchForm =
+        document.getElementById("searchForm");
+
+
+    searchForm.addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const classCode =
+            document.getElementById("classCode")
+                .value
+                .trim()
+                .replace(/\s+/g, "")
+                .toUpperCase();
+
+        const section =
+            document.getElementById("section")
+                .value
+                .trim();
+
+
+        if (!classCode) {
+            return;
+        }
+
+
+        let url =
+            "results.html?classCode=" +
+            encodeURIComponent(classCode);
+
+
+        if (section) {
+
+            url +=
+                "&section=" +
+                encodeURIComponent(section);
+
+        }
+
+
+        window.location.href = url;
+
+    });
+
+</script>
+
+</body>
 </html>
